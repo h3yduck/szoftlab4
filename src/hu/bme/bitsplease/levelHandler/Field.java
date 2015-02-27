@@ -6,7 +6,7 @@ package hu.bme.bitsplease.levelHandler;
 
 public class Field {
     public enum Type {
-        HOLE, FREE, OIL, STICK;
+        USRPOS, HOLE, FREE, OIL, STICK
     }
 
     public Type fieldType;

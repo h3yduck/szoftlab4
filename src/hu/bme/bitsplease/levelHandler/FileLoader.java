@@ -14,7 +14,11 @@ public class FileLoader implements LevelLoader{
         this.pathToLevelFile = pathToLevelFile;
     }
 
+    public FileLoader() {
+    }
+
     @Override
+
 
     public Level getLevel() {
         return null;

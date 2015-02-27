@@ -23,6 +23,9 @@ public class GameEngine {
         this.levelLoader = levelLoader;
     }
 
+    public GameEngine() {
+    }
+
     public void startGame(){
         getSettings();
         play();

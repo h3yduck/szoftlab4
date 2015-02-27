@@ -15,7 +15,7 @@ public class App {
         if(args.length > 0)
             levelLoader = new FileLoader(args[0]);
         else
-            levelLoader = new FileLoader();
+            levelLoader = null;
         GameEngine gameEngine = new GameEngine(levelLoader);
         gameEngine.startGame();
 
