@@ -10,10 +10,6 @@ public class FileLoader implements LevelLoader{
         this.pathToLevelFile = pathToLevelFile;
     }
 
-    public FileLoader() {
-        pathToLevelFile = null;
-    }
-
     public void setPathToLevelFile(String pathToLevelFile) {
         this.pathToLevelFile = pathToLevelFile;
     }

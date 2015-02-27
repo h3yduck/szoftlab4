@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>hu.bme.bitsplease.gameEngine.GameEngine</OriginalElement>
+  <nodes>
+    <node x="-497.0" y="-85.0">hu.bme.bitsplease.stepHandler.ConsoleInput</node>
+    <node x="-119.0" y="136.0">hu.bme.bitsplease.levelHandler.Field</node>
+    <node x="-494.0" y="4.0">hu.bme.bitsplease.stepHandler.StepHandler</node>
+    <node x="-28.0" y="138.0">hu.bme.bitsplease.stepHandler.Step</node>
+    <node x="-518.0" y="95.0">hu.bme.bitsplease.playerHandler.Player</node>
+    <node x="-262.5" y="-196.0">hu.bme.bitsplease.levelHandler.LevelLoader</node>
+    <node x="-526.0" y="318.0">hu.bme.bitsplease.displayHandler.ConsoleDisplay</node>
+    <node x="-209.0" y="139.0">hu.bme.bitsplease.levelHandler.Level</node>
+    <node x="-526.0" y="227.0">hu.bme.bitsplease.displayHandler.DisplayHandler</node>
+    <node x="-284.0" y="-85.0">hu.bme.bitsplease.gameEngine.GameEngine</node>
+    <node x="-318.0" y="-320.0">hu.bme.bitsplease.levelHandler.FileLoader</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="hu.bme.bitsplease.playerHandler.Player" target="hu.bme.bitsplease.displayHandler.DisplayHandler">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="hu.bme.bitsplease.playerHandler.Player" target="hu.bme.bitsplease.stepHandler.StepHandler">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="hu.bme.bitsplease.displayHandler.ConsoleDisplay" target="hu.bme.bitsplease.displayHandler.DisplayHandler">
+      <point x="0.0" y="-25.0" />
+      <point x="0.0" y="25.0" />
+    </edge>
+    <edge source="hu.bme.bitsplease.gameEngine.GameEngine" target="hu.bme.bitsplease.levelHandler.Level">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="hu.bme.bitsplease.levelHandler.FileLoader" target="hu.bme.bitsplease.levelHandler.LevelLoader">
+      <point x="0.0" y="-35.5" />
+      <point x="0.0" y="25.0" />
+    </edge>
+    <edge source="hu.bme.bitsplease.gameEngine.GameEngine" target="hu.bme.bitsplease.levelHandler.LevelLoader">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="hu.bme.bitsplease.stepHandler.ConsoleInput" target="hu.bme.bitsplease.stepHandler.StepHandler">
+      <point x="0.0" y="-25.0" />
+      <point x="0.0" y="25.0" />
+    </edge>
+    <edge source="hu.bme.bitsplease.gameEngine.GameEngine" target="hu.bme.bitsplease.playerHandler.Player">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="56.5" y="14.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+

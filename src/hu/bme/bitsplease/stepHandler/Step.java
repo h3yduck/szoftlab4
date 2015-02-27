@@ -5,4 +5,5 @@ package hu.bme.bitsplease.stepHandler;
  */
 public class Step {
     // iranyvaltoztatasi egysegvektor szoge + olaj/ragacs/semmi
+
 }

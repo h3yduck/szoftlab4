@@ -17,7 +17,7 @@ public class GameEngine {
     private Level level;
 
     private List<Player> players; // gyakorlatilag barmennyi jatekos, mind sajat StepHandlerrel, es DisplayHandlerrel
-    //private Map<Player, Integer> playerScores; // igy nem tudna csalni a pontjaval
+    private Map<Player, Integer> playerScores; // igy nem tudna csalni a pontjaval
 
     public GameEngine(LevelLoader levelLoader) {
         this.levelLoader = levelLoader;
