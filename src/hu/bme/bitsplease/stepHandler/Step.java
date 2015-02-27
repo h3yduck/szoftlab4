@@ -5,5 +5,10 @@ package hu.bme.bitsplease.stepHandler;
  */
 public class Step {
     // iranyvaltoztatasi egysegvektor szoge + olaj/ragacs/semmi
+    public enum ActionType {
+        OIL, STICK
+    }
 
+    public ActionType stepAction;
+    public double angle;
 }
