@@ -1,10 +1,8 @@
 package hu.bme.bitsplease.gameEngine;
 
-import hu.bme.bitsplease.displayHandler.DisplayHandler;
 import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.levelHandler.LevelLoader;
 import hu.bme.bitsplease.playerHandler.Player;
-import hu.bme.bitsplease.stepHandler.StepHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -26,12 +24,12 @@ public class GameEngine {
     public GameEngine() {
     }
 
-    public void startGame(){
+    public void startGame() {
         getSettings();
         play();
     }
 
-    public void getSettings(){
+    public void getSettings() {
         // elso kepernyo, jatekosok szamanak stb... bekerese
         // a handler-ek hozzarendelese jatekosokhoz
 
@@ -39,7 +37,7 @@ public class GameEngine {
         level = levelLoader.getLevel();
     }
 
-    public void play(){
+    public void play() {
         // tenyleges jatek mechanika
         // minden lepes vegen meg kell hivni minden jatekos DisplayHandleret
         // minden lepeskor az aktualis jatekos StepHandleret
