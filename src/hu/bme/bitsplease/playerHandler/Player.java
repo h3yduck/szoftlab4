@@ -5,6 +5,8 @@ import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.stepHandler.Step;
 import hu.bme.bitsplease.stepHandler.StepHandler;
 
+import java.util.Map;
+
 /**
  * Created by h3yduck on 2/27/15.
  */
@@ -14,6 +16,8 @@ public class Player {
 
     private String name;
     private int score; // ha kozpontilag (is) tarolnank(GameEngine-be) nem tudna a ponttal csalni
+
+    public Map<Step.ActionType, Integer> actionNums;
 
     public Player(StepHandler stepHandler, DisplayHandler displayHandler, String name) {
         this.stepHandler = stepHandler;
