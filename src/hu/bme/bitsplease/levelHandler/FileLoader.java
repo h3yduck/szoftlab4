@@ -3,7 +3,7 @@ package hu.bme.bitsplease.levelHandler;
 /**
  * Created by h3yduck on 2/27/15.
  */
-public class FileLoader implements LevelLoader{
+public class FileLoader implements LevelLoader {
     private String pathToLevelFile;
 
     public FileLoader(String pathToLevelFile) {
@@ -18,8 +18,6 @@ public class FileLoader implements LevelLoader{
     }
 
     @Override
-
-
     public Level getLevel() {
         return null;
     }

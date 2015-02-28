@@ -24,12 +24,12 @@ public class GameEngine {
     public GameEngine() {
     }
 
-    public void startGame(){
+    public void startGame() {
         getSettings();
         play();
     }
 
-    public void getSettings(){
+    public void getSettings() {
         // elso kepernyo, jatekosok szamanak stb... bekerese
         // a handler-ek hozzarendelese jatekosokhoz
 
@@ -37,7 +37,7 @@ public class GameEngine {
         level = levelLoader.getLevel();
     }
 
-    public void play(){
+    public void play() {
         // tenyleges jatek mechanika
         // minden lepes vegen meg kell hivni minden jatekos DisplayHandleret
         // minden lepeskor az aktualis jatekos StepHandleret

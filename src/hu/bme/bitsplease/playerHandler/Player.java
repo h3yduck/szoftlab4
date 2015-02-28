@@ -22,15 +22,15 @@ public class Player {
         this.score = 0;
     }
 
-    public Step getStep(){
+    public Step getStep() {
         return stepHandler.getStep();
     }
 
-    public void displayLevel(Level actualLevelState){
+    public void displayLevel(Level actualLevelState) {
         displayHandler.displayLevel(actualLevelState);
     }
 
-    public void addScore(int plusScore){
+    public void addScore(int plusScore) {
         score += plusScore;
     }
 }
