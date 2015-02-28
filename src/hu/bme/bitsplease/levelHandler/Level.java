@@ -1,9 +1,7 @@
 package hu.bme.bitsplease.levelHandler;
 
 import hu.bme.bitsplease.playerHandler.Player;
-import hu.bme.bitsplease.stepHandler.Step;
 
-import java.util.List;
 import java.util.Map;
 
 /**

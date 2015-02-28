@@ -1,12 +1,8 @@
 package hu.bme.bitsplease;
 
-import hu.bme.bitsplease.displayHandler.ConsoleDisplay;
-import hu.bme.bitsplease.displayHandler.DisplayHandler;
 import hu.bme.bitsplease.gameEngine.GameEngine;
 import hu.bme.bitsplease.levelHandler.FileLoader;
 import hu.bme.bitsplease.levelHandler.LevelLoader;
-import hu.bme.bitsplease.stepHandler.ConsoleInput;
-import hu.bme.bitsplease.stepHandler.StepHandler;
 
 public class App {
 

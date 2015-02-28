@@ -1,10 +1,8 @@
 package hu.bme.bitsplease.gameEngine;
 
-import hu.bme.bitsplease.displayHandler.DisplayHandler;
 import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.levelHandler.LevelLoader;
 import hu.bme.bitsplease.playerHandler.Player;
-import hu.bme.bitsplease.stepHandler.StepHandler;
 
 import java.util.List;
 import java.util.Map;
