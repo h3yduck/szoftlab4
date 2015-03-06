@@ -16,6 +16,7 @@ public class Player {
 
     private String name;
     private int score; // ha kozpontilag (is) tarolnank(GameEngine-be) nem tudna a ponttal csalni
+    private Velocity velocity;
 
     public Map<Step.ActionType, Integer> actionNums;
 
