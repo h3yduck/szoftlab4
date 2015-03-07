@@ -1,5 +1,6 @@
 package hu.bme.bitsplease.levelHandler;
 
+import hu.bme.bitsplease.App;
 import hu.bme.bitsplease.playerHandler.Player;
 
 import java.io.BufferedReader;
@@ -25,7 +26,8 @@ public class FileLoader implements LevelLoader {
 
     @Override
     public Level getLevel() throws Exception {
-    	BufferedReader br = null;
+        App.printList("getLevel");
+        BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(pathToLevelFile));
             String line;

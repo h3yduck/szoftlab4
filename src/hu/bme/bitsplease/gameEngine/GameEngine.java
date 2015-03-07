@@ -42,16 +42,42 @@ public class GameEngine {
     }
 
     public void startGame() throws Exception {
+        App.printList("startGame");
+        App.newToList();
         getSettings();
+        App.incrementList();
         play();
+        App.removeList();
     }
 
     public void getSettings() throws Exception {
+        App.printList("getSettings");
+        if(levelLoader == null){
+            //Ha nincs betöltött pálya, akkor lekérdezzük a felhasználótól
+            String levelName = App.getLevel();
+            levelLoader = new FileLoader(levelName);
+
+        }
+        App.newToList();
+        level = levelLoader.getLevel();
+
+        //specialis elemek szamanak lekerdezese
+        App.incrementList();
+        int specialTypeNum = App.getSpecialActionTypeNumber();
+        //specialis elemek szamanak beallitasa minden jatekos reszere oil és stickre is
+        for(int i = 0; i < players.size(); i++) {
+            players.get(i).actionNums.put(ActionType.OIL, specialTypeNum);
+            players.get(i).actionNums.put(ActionType.STICK, specialTypeNum);
+        }
+
+
+
     	// elso kepernyo, jatekosok szamanak stb... bekerese
         //jatekosok szamanak lekerdezese
+        App.incrementList();
         int numOfPlayers = App.getNumOfPlayer();
         //jatekosok hozzaadas a listahoz, sajat stephandlerrel,displayhandlerrel, konzolbol megadott nevvel
-        
+        App.printTabs();
         System.out.println("Játékosok nevei?");
         for(int i = 0; i < numOfPlayers; i++) {
         	//jatekos nevenek lekerdezese
@@ -59,7 +85,8 @@ public class GameEngine {
         	String name = "";
         	while(!goodInput){
         		goodInput = true;
-        		System.out.print(i + ". ");
+                App.printTabs();
+        		System.out.print(i+1 + ". ");
         		name = App.getRobotName();
         		if(name.length() > 10 && name.length() < 1){
         			goodInput = false;
@@ -72,37 +99,22 @@ public class GameEngine {
         }
         
 	    //kezdeti korok szamanak lekerdezese
-	    remainingRounds = App.getGameLength();
-	        
-	    if(levelLoader == null){
-	    	//Ha nincs betöltött pálya, akkor lekérdezzük a felhasználótól
-	        String levelName = App.getLevel();
-	        levelLoader = new FileLoader(levelName);
-        
-        }
-        level = levelLoader.getLevel();
-        
-        //specialis elemek szamanak lekerdezese
-        int specialTypeNum = App.getSpecialActionTypeNumber();
-        //specialis elemek szamanak beallitasa minden jatekos reszere oil és stickre is
-        for(int i = 0; i < players.size(); i++) {
-        	players.get(i).actionNums.put(ActionType.OIL, specialTypeNum);
-        	players.get(i).actionNums.put(ActionType.STICK, specialTypeNum);
-        }
-       
+        App.incrementList();
+        remainingRounds = App.getGameLength();
+
         List<Position> positions = new ArrayList<Position>();
         for(int i = 0; i < level.fields.length; i++){
-        	for(int j = 0; j < level.fields[i].length; j++){
-        		if(level.fields[i][j].fieldType == Field.Type.USRPOS){
-        			positions.add(new Position(j ,i));
-        		}
-        	}
+            for(int j = 0; j < level.fields[i].length; j++){
+                if(level.fields[i][j].fieldType == Field.Type.USRPOS){
+                    positions.add(new Position(j ,i));
+                }
+            }
         }
         for(Player player : players){
-        	Random random = new Random();
-        	level.playerPositions.put(player, positions.get(random.nextInt(positions.size())));
+            Random random = new Random();
+            level.playerPositions.put(player, positions.get(random.nextInt(positions.size())));
         }
-        
+        App.removeList();
     }
 
     public void play() {
