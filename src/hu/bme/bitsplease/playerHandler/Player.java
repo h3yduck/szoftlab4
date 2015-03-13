@@ -3,7 +3,7 @@ package hu.bme.bitsplease.playerHandler;
 import hu.bme.bitsplease.displayHandler.DisplayHandler;
 import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.stepHandler.Step;
-import hu.bme.bitsplease.stepHandler.StepHandler;
+import hu.bme.bitsplease.stepHandler.InputHandler;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by h3yduck on 2/27/15.
  */
 public class Player {
-    private StepHandler stepHandler;
+    private InputHandler stepHandler;
     private DisplayHandler displayHandler;
 
     private String name;
@@ -20,8 +20,8 @@ public class Player {
 
     public Map<Step.ActionType, Integer> actionNums;
 
-    public Player(StepHandler stepHandler, DisplayHandler displayHandler, String name) {
-        this.stepHandler = stepHandler;
+    public Player(InputHandler inputHandler, DisplayHandler displayHandler, String name) {
+        this.stepHandler = inputHandler;
         this.displayHandler = displayHandler;
         this.name = name;
         this.score = 0;
