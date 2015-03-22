@@ -24,12 +24,12 @@ public class GameEngine {
     public GameEngine() {
     }
 
-    public void startGame() {
+    public void startGame() throws Exception {
         getSettings();
         play();
     }
 
-    public void getSettings() {
+    public void getSettings() throws Exception {
         // elso kepernyo, jatekosok szamanak stb... bekerese
         // a handler-ek hozzarendelese jatekosokhoz
 

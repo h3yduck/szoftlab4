@@ -6,7 +6,24 @@ package hu.bme.bitsplease.levelHandler;
 
 public class Field {
     public enum Type {
-        USRPOS, HOLE, FREE, OIL, STICK
+        USRPOS('U'),
+        HOLE('H'),
+        FREE('F'),
+        OIL('O'),
+        STICK('S');
+
+        private char key;
+
+        Type(char key) {
+            this.key = key;
+        }
+
+        public static Type fromChar(char c) {
+            for (Type t : Type.values())
+                if (c == t.key)
+                    return t;
+            return null;
+        }
     }
 
     public Type fieldType;

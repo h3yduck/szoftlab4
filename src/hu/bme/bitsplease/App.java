@@ -6,7 +6,7 @@ import hu.bme.bitsplease.levelHandler.LevelLoader;
 
 public class App {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         LevelLoader levelLoader;
         if (args.length > 0)
             levelLoader = new FileLoader(args[0]);
@@ -14,6 +14,5 @@ public class App {
             levelLoader = null;
         GameEngine gameEngine = new GameEngine(levelLoader);
         gameEngine.startGame();
-
     }
 }
