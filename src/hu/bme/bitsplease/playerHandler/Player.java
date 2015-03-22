@@ -14,9 +14,9 @@ public class Player {
     private InputHandler stepHandler;
     private DisplayHandler displayHandler;
 
-    private String name;
-    private int score; // ha kozpontilag (is) tarolnank(GameEngine-be) nem tudna a ponttal csalni
-    private Velocity velocity;
+    public String name;
+    private int score;
+    public Velocity velocity;
 
     public Map<Step.ActionType, Integer> actionNums;
 
@@ -28,7 +28,7 @@ public class Player {
     }
 
     public Step getStep() {
-        return stepHandler.getStep();
+        return stepHandler.getStep(name);
     }
 
     public void displayLevel(Level actualLevelState) {
@@ -37,5 +37,8 @@ public class Player {
 
     public void addScore(int plusScore) {
         score += plusScore;
+    }
+    public int getScore(){
+    	return score;
     }
 }

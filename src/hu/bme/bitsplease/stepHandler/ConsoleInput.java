@@ -7,7 +7,7 @@ import hu.bme.bitsplease.levelHandler.Level;
  */
 public class ConsoleInput implements InputHandler {
     @Override
-    public Step getStep() {
+    public Step getStep(String nameOfPlayer) {
         return null;
     }
 

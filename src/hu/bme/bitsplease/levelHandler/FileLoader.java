@@ -25,8 +25,9 @@ public class FileLoader implements LevelLoader {
 
     @Override
     public Level getLevel() throws Exception {
+    	BufferedReader br = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(pathToLevelFile));
+            br = new BufferedReader(new FileReader(pathToLevelFile));
             String line;
 
             if ((line = br.readLine()) == null)
@@ -57,6 +58,9 @@ public class FileLoader implements LevelLoader {
             return level;
         } catch (Exception e) {
             throw new Exception("Error on level file loading", e);
+        }
+        finally{
+        	br.close();
         }
     }
 }
