@@ -16,11 +16,11 @@ public class App {
         gameEngine.startGame();
     }
     
-    public static int numOfPlayers() {
+    public static int getNumOfPlayer() {
     	return 5;
     }
     
-    public static String getName(){
+    public static String getRobotName(){
     	return null;
     }
     
@@ -31,4 +31,8 @@ public class App {
     public static int getSpecialActionTypeNumber() {
     	return 1;
     }
+
+	public static String getLevel() {
+		return null;
+	}
 }
