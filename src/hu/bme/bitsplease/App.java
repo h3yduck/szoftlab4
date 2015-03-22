@@ -1,7 +1,6 @@
 package hu.bme.bitsplease;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class App {
     }
     
     public static int getNumOfPlayer() {
-        printList("getNumOfPlayer");
+        printList("[:App]getNumOfPlayer");
     	boolean goodInput = false;
     	int numOfPlayers = 0;
     	while(!goodInput){
@@ -62,9 +61,11 @@ public class App {
     }
     
     public static String getRobotName(){
+    	printList("[:App]getRobotName");
     	String robotName = "";
     	try{
-    		System.out.print("játékos neve? ");
+    		App.printTabs();
+    		System.out.print("Játékos neve? ");
     		robotName = br.readLine();	
     	}
     	catch(Exception e){}
@@ -72,7 +73,7 @@ public class App {
     }
     
     public static int getGameLength() {
-        printList("getGameLength");
+        printList("[:App]getGameLength");
     	boolean goodInput = false;
     	int gameLength = 0;
     	while(!goodInput){
@@ -100,6 +101,7 @@ public class App {
     }
     
     public static int getSpecialActionTypeNumber() {
+    	printList("[:App]getSpecialActionTypeNumber");
     	boolean goodInput = false;
     	int specialActionTypeNumber = 0;
     	while(!goodInput){
@@ -127,6 +129,7 @@ public class App {
     }
 
 	public static String getLevel() {
+		printList("[:App]getLevel");
 		String levelName = "";
 		try{
 			boolean goodInput = false;
@@ -147,18 +150,23 @@ public class App {
 	}
 
 	public static void displayLevel(Level actualLevelState) {
-		for(int i = 0; i < actualLevelState.fields.length; i++){
-			for(int j = 0; j < actualLevelState.fields[i].length; j++){
-				System.out.print(actualLevelState.fields[i][j].fieldType.key);
+		if(menuItem != 1){
+			for(int i = 0; i < actualLevelState.fields.length; i++){
+				for(int j = 0; j < actualLevelState.fields[i].length; j++){
+					System.out.print(actualLevelState.fields[i][j].fieldType.key);
+				}
+				System.out.println();
 			}
+			System.out.println();
 		}
 	}
 
 	public static Step getStep(String name) {
+		printList("[:App]getStep");
 		Step actualStep =  new Step();
 		boolean goodInput = false;
     	int specialActionTypeNumber = 0;
-    	while(!goodInput){
+    	/*while(!goodInput){
             printTabs();
 	    	System.out.print("A lépés szöge? ");
 	    	goodInput = true;
@@ -176,8 +184,8 @@ public class App {
                 printTabs();
 	    		System.out.println(e.getMessage());
 	    	}
-    	}
-		actualStep.angle = 0;
+    	}*/
+		actualStep.angle = -1;
 		return actualStep;
 	}
 
@@ -229,6 +237,12 @@ public class App {
                 sorszam.add(menuItem);
                 try {
                     gameEngine.startGame();
+                    System.out.println("1. Játék indítása\n" +
+                            "2. Lépés\n" +
+                            "3. Speciális elemre lépés\n" +
+                            "4. Eltűnik a speciális\n" +
+                            "5. Játék vége\n" +
+                            "6. Kilépés");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

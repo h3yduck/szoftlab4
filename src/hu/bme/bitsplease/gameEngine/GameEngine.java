@@ -42,23 +42,45 @@ public class GameEngine {
     }
 
     public void startGame() throws Exception {
-        App.printList("startGame");
-        App.newToList();
-        getSettings();
-        App.incrementList();
-        play();
-        App.removeList();
+        App.printList("[:GameEngine]startGame");
+        if(App.menuItem == 1){
+        	App.newToList();
+        	getSettings();
+        }else{
+        	levelLoader = new FileLoader("1");
+        	players.add(new Player(null, null, "TestPlayer"));
+        	players.get(0).actionNums.put(ActionType.OIL, 3);
+            players.get(0).actionNums.put(ActionType.STICK, 3);
+            remainingRounds = 1;
+            level = levelLoader.getLevel();
+            level.playerPositions.put(players.get(0), new Position(0, 0));
+            for(int i = 0; i < level.fields.length; i++){
+                for(int j = 0; j < level.fields[i].length; j++){
+                    if(level.fields[i][j].fieldType == Field.Type.USRPOS){
+                        level.fields[i][j].fieldType = Field.Type.FREE;
+                    }
+                }
+            }
+        }
+        if(App.menuItem != 1){
+        	App.newToList();
+        	play();
+        	App.removeList();
+        }
     }
-
+    
     public void getSettings() throws Exception {
-        App.printList("getSettings");
+        App.printList("[:GameEngine]"
+        		+ "getSettings");
+        
         if(levelLoader == null){
             //Ha nincs betöltött pálya, akkor lekérdezzük a felhasználótól
+        	App.newToList();
             String levelName = App.getLevel();
             levelLoader = new FileLoader(levelName);
 
         }
-        App.newToList();
+        App.incrementList();
         level = levelLoader.getLevel();
 
         //specialis elemek szamanak lekerdezese
@@ -85,8 +107,6 @@ public class GameEngine {
         	String name = "";
         	while(!goodInput){
         		goodInput = true;
-                App.printTabs();
-        		System.out.print(i+1 + ". ");
         		name = App.getRobotName();
         		if(name.length() > 10 && name.length() < 1){
         			goodInput = false;
@@ -107,6 +127,7 @@ public class GameEngine {
             for(int j = 0; j < level.fields[i].length; j++){
                 if(level.fields[i][j].fieldType == Field.Type.USRPOS){
                     positions.add(new Position(j ,i));
+                    level.fields[i][j].fieldType = Field.Type.FREE;
                 }
             }
         }
@@ -118,14 +139,17 @@ public class GameEngine {
     }
 
     public void play() {
+    	App.printList("[:GameEngine]play");
         // tenyleges jatek mechanika
         // minden lepes vegen meg kell hivni minden jatekos DisplayHandleret
         // minden lepeskor az aktualis jatekos StepHandleret
         // frissiteni kell a jatekosok pontjait
+    	
     	Boolean EndOfTheGame = false;
         /*
          *  A játék addig fut, amíg az EndOfTheGame változó false
          */
+    	App.newToList();
         while(!EndOfTheGame){
 
             /*
@@ -140,6 +164,7 @@ public class GameEngine {
             		
             		while(!goodStep){
             			goodStep = true;
+            			
 	            		actualStep = player.getStep();
 	            		
 	            		/*
@@ -208,10 +233,11 @@ public class GameEngine {
             		int newScore = Math.abs(actualX-level.playerPositions.get(player).x)
             				     + Math.abs(actualY-level.playerPositions.get(player).y);
             		playerScores.put(player, newScore);
+            		App.incrementList();
             		player.addScore(newScore);
             		level.playerPositions.put(player, new Position(actualX, actualY));
             	}
-            	
+            	App.incrementList();
             	player.displayLevel(level);
             	
             }
@@ -228,16 +254,15 @@ public class GameEngine {
         			}
         		}
         	}
-            for(Player player : players){
-            	if(player != null)
-            		player.displayLevel(level);
-            }
             
             remainingRounds--;
         	
         	if(remainingRounds <= 0 || outPlayers.size() >= players.size()-1){
         		EndOfTheGame = true;
         	}
+        	App.incrementList();
+        	
         }
+        App.removeList();
     }
 }

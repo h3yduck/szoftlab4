@@ -32,14 +32,22 @@ public class Player {
     }
 
     public Step getStep() {
-        return App.getStep(name);
+    	App.printList("[:Player]getStep");
+    	App.newToList();
+        Step actualStep = App.getStep(name);
+    	App.removeList();
+    	return actualStep;
     }
 
     public void displayLevel(Level actualLevelState) {
+    	App.printList("[:Player]displayLevel");
+    	App.newToList();
         App.displayLevel(actualLevelState);
+        App.removeList();
     }
 
     public void addScore(int plusScore) {
+    	App.printList("[:Player]addScore");
         score += plusScore;
     }
     public int getScore(){

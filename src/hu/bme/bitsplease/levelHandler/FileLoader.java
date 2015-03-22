@@ -26,7 +26,8 @@ public class FileLoader implements LevelLoader {
 
     @Override
     public Level getLevel() throws Exception {
-        App.printList("getLevel");
+    	if(App.menuItem == 1)
+    		App.printList("[:FileLoader]getLevel");
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(pathToLevelFile));
