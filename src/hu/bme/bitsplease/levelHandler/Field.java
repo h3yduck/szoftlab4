@@ -12,7 +12,7 @@ public class Field {
         OIL('O'),
         STICK('S');
 
-        private char key;
+        public char key;
 
         Type(char key) {
             this.key = key;

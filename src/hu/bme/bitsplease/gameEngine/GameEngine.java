@@ -51,9 +51,20 @@ public class GameEngine {
         //jatekosok szamanak lekerdezese
         int numOfPlayers = App.getNumOfPlayer();
         //jatekosok hozzaadas a listahoz, sajat stephandlerrel,displayhandlerrel, konzolbol megadott nevvel
+        
+        System.out.println("Játékosok nevei?");
         for(int i = 0; i < numOfPlayers; i++) {
         	//jatekos nevenek lekerdezese
-        	String name = App.getRobotName();
+        	boolean goodInput = false;
+        	String name = "";
+        	while(!goodInput){
+        		goodInput = true;
+        		System.out.print(i + ". ");
+        		name = App.getRobotName();
+        		if(name.length() > 10 && name.length() < 1){
+        			goodInput = false;
+        		}
+        	}
         	Player player = new Player(null,null, name);
             players.add(player);
             //jatekos pontszamanak beallitasa
