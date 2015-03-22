@@ -1,5 +1,7 @@
 package hu.bme.bitsplease.gameEngine;
 
+import hu.bme.bitsplease.stepHandler.Step.ActionType;
+import hu.bme.bitsplease.App;
 import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.levelHandler.LevelLoader;
 import hu.bme.bitsplease.playerHandler.Player;
@@ -30,11 +32,42 @@ public class GameEngine {
     }
 
     public void getSettings() throws Exception {
-        // elso kepernyo, jatekosok szamanak stb... bekerese
-        // a handler-ek hozzarendelese jatekosokhoz
-
+    	// elso kepernyo, jatekosok szamanak stb... bekerese
+        //jatekosok szamanak lekerdezese
+        int numOfPlayers = App.numOfPlayers();
+        //jatekosok hozzaadas a listahoz, sajat stephandlerrel,displayhandlerrel, konzolbol megadott nevvel
+        for(int i = 0; i < numOfPlayers; i++) {
+        	//jatekos nevenek lekerdezese
+        	String name = App.getName();
+        	Player player = new Player(null,null, name);
+            players.add(player);
+            //jatekos pontszamanak beallitasa
+            playerScores.put(player, 0);
+        }
+        
         // jelenleg az App->main-ban beallitottuk parancssori parameter alapjan
+        //palya betoltese
         level = levelLoader.getLevel();
+        
+        //kezdeti korok szamanak lekerdezese
+        int remainingRounds = App.getGameLength();
+        //hatralevo korok szamanak beallitasa
+        for(int i = 0; i < level.fields.length; i++){
+        	for(int j = 0; j < level.fields[0].length; j++) {
+        		level.fields[i][j].remainingRounds = remainingRounds;
+        	}
+        }
+        
+        //specialis elemek szamanak lekerdezese
+        int specialTypeNum = App.getSpecialActionTypeNumber();
+        //specialis elemek szamanak beallitasa minden jatekos reszere oil és stickre is
+        for(int i = 0; i < players.size(); i++) {
+        	players.get(i).actionNums.put(ActionType.OIL, specialTypeNum);
+        	players.get(i).actionNums.put(ActionType.STICK, specialTypeNum);
+        }
+        
+
+       
     }
 
     public void play() {

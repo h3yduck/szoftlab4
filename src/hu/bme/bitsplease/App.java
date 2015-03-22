@@ -15,4 +15,20 @@ public class App {
         GameEngine gameEngine = new GameEngine(levelLoader);
         gameEngine.startGame();
     }
+    
+    public static int numOfPlayers() {
+    	return 5;
+    }
+    
+    public static String getName(){
+    	return null;
+    }
+    
+    public static int getGameLength() {
+    	return 5;
+    }
+    
+    public static int getSpecialActionTypeNumber() {
+    	return 1;
+    }
 }
