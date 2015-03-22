@@ -171,10 +171,8 @@ public class GameEngine {
 	            		 * Ellenőrizzük, hogy rakott e le valamit, és hogy van e rá kapacitása
 	            		 * Ha van, akkor lerakjuk a mezőre és csökkentjük a kapacitást
 	            		 */
-	            		
-	            		if(actualStep.stepAction == null){
-	            			goodStep = false;
-	            		}else{
+
+                        if(!actualStep.stepAction == null){
 	            			if(player.actionNums.get(actualStep.stepAction) > 0){
 	            				if(actualStep.stepAction == Step.ActionType.OIL)
 	            					level.fields[level.playerPositions.get(player).y][level.playerPositions.get(player).x].fieldType = Field.Type.fromChar('O');
