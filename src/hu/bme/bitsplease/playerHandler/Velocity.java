@@ -5,4 +5,8 @@ package hu.bme.bitsplease.playerHandler;
  */
 public class Velocity {
     public double angle, size;
+    public Velocity(){
+    	angle = 0;
+    	size = 0;
+    }
 }

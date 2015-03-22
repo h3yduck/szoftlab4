@@ -11,6 +11,6 @@ public class Position {
 		x = actualX;
 		y = actualY;
 	}
-
+    
 	
 }

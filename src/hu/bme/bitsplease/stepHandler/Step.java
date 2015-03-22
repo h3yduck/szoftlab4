@@ -8,6 +8,11 @@ public class Step {
     public enum ActionType {
         OIL, STICK
     }
+    
+    public Step(){
+    	angle = -1;
+    	stepAction = null;
+    }
 
     public ActionType stepAction;
     public double angle;

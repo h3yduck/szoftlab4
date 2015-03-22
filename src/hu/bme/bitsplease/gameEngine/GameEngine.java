@@ -10,8 +10,11 @@ import hu.bme.bitsplease.levelHandler.Position;
 import hu.bme.bitsplease.playerHandler.Player;
 import hu.bme.bitsplease.levelHandler.Field;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by h3yduck on 2/27/15.
@@ -27,9 +30,15 @@ public class GameEngine {
 
     public GameEngine(LevelLoader levelLoader) {
         this.levelLoader = levelLoader;
+        players = new ArrayList<Player>();
+    	outPlayers = new ArrayList<Player>();
+    	playerScores = new HashMap<Player, Integer>();
     }
 
     public GameEngine() {
+    	players = new ArrayList<Player>();
+    	outPlayers = new ArrayList<Player>();
+    	playerScores = new HashMap<Player, Integer>();
     }
 
     public void startGame() throws Exception {
@@ -52,7 +61,7 @@ public class GameEngine {
         }
         
 	    //kezdeti korok szamanak lekerdezese
-	    int remainingRounds = App.getGameLength();
+	    remainingRounds = App.getGameLength();
 	        
 	    if(levelLoader == null){
 	    	//Ha nincs betöltött pálya, akkor lekérdezzük a felhasználótól
@@ -60,8 +69,6 @@ public class GameEngine {
 	        levelLoader = new FileLoader(levelName);
         
         }
-        // jelenleg az App->main-ban beallitottuk parancssori parameter alapjan
-        //palya betoltese
         level = levelLoader.getLevel();
         
         //specialis elemek szamanak lekerdezese
@@ -72,6 +79,19 @@ public class GameEngine {
         	players.get(i).actionNums.put(ActionType.STICK, specialTypeNum);
         }
        
+        List<Position> positions = new ArrayList<Position>();
+        for(int i = 0; i < level.fields.length; i++){
+        	for(int j = 0; j < level.fields[i].length; j++){
+        		if(level.fields[i][j].fieldType == Field.Type.USRPOS){
+        			positions.add(new Position(j ,i));
+        		}
+        	}
+        }
+        for(Player player : players){
+        	Random random = new Random();
+        	level.playerPositions.put(player, positions.get(random.nextInt(positions.size())));
+        }
+        
     }
 
     public void play() {

@@ -1,10 +1,12 @@
 package hu.bme.bitsplease.playerHandler;
 
+import hu.bme.bitsplease.App;
 import hu.bme.bitsplease.displayHandler.DisplayHandler;
 import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.stepHandler.Step;
 import hu.bme.bitsplease.stepHandler.InputHandler;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,14 +27,16 @@ public class Player {
         this.displayHandler = displayHandler;
         this.name = name;
         this.score = 0;
+        actionNums = new HashMap<Step.ActionType, Integer>();
+        velocity = new Velocity();
     }
 
     public Step getStep() {
-        return stepHandler.getStep(name);
+        return App.getStep(name);
     }
 
     public void displayLevel(Level actualLevelState) {
-        displayHandler.displayLevel(actualLevelState);
+        App.displayLevel(actualLevelState);
     }
 
     public void addScore(int plusScore) {

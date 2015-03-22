@@ -2,17 +2,22 @@ package hu.bme.bitsplease;
 
 import hu.bme.bitsplease.gameEngine.GameEngine;
 import hu.bme.bitsplease.levelHandler.FileLoader;
+import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.levelHandler.LevelLoader;
+import hu.bme.bitsplease.stepHandler.Step;
 
 public class App {
 
     public static void main(String[] args) throws Exception {
         LevelLoader levelLoader;
-        if (args.length > 0)
+        GameEngine gameEngine;
+        if (args.length > 0){
             levelLoader = new FileLoader(args[0]);
-        else
-            levelLoader = null;
-        GameEngine gameEngine = new GameEngine(levelLoader);
+            gameEngine = new GameEngine(levelLoader);
+        }
+        else{
+        	gameEngine = new GameEngine();
+        }
         gameEngine.startGame();
     }
     
@@ -21,7 +26,7 @@ public class App {
     }
     
     public static String getRobotName(){
-    	return null;
+    	return "asd";
     }
     
     public static int getGameLength() {
@@ -33,6 +38,16 @@ public class App {
     }
 
 	public static String getLevel() {
-		return null;
+		return "1";
+	}
+
+	public static void displayLevel(Level actualLevelState) {
+		
+	}
+
+	public static Step getStep(String name) {
+		Step actualStep =  new Step();
+		actualStep.angle = 0;
+		return actualStep;
 	}
 }
