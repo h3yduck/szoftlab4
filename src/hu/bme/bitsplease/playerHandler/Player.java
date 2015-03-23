@@ -32,22 +32,26 @@ public class Player {
     }
 
     public Step getStep() {
-    	App.printList("[:Player]getStep");
+    	if(App.menuItem == 2)
+    		App.printList("[:Player]getStep");
     	App.newToList();
+    	//Bekérjük névvel a lépést
         Step actualStep = App.getStep(name);
     	App.removeList();
     	return actualStep;
     }
 
     public void displayLevel(Level actualLevelState) {
-    	App.printList("[:Player]displayLevel");
+    	if(App.menuItem == 2)
+    		App.printList("[:Player]displayLevel");
     	App.newToList();
         App.displayLevel(actualLevelState);
         App.removeList();
     }
 
     public void addScore(int plusScore) {
-    	App.printList("[:Player]addScore");
+    	if(App.menuItem == 2)
+    		App.printList("[:Player]addScore");
         score += plusScore;
     }
     public int getScore(){

@@ -26,24 +26,31 @@ public class FileLoader implements LevelLoader {
 
     @Override
     public Level getLevel() throws Exception {
+    	//Kiírjuk a függvény hierarchiát
     	if(App.menuItem == 1)
     		App.printList("[:FileLoader]getLevel");
+    	
         BufferedReader br = null;
         try {
+        	//BufferedReader a megfelelő file-hoz
             br = new BufferedReader(new FileReader(pathToLevelFile));
             String line;
 
             if ((line = br.readLine()) == null)
                 throw new Exception("Invalid file format, maybe empty file");
+            
+            //Az első sor a pályát jelképező mátrix mérete, azaz két int
             String[] parts = line.split("\\s+");
             if (parts.length != 2)
                 throw new Exception("Invalid file format");
             Integer sizeX = Integer.parseInt(parts[0]);
             Integer sizeY = Integer.parseInt(parts[1]);
 
+            //Létrehozzuk az új pályát
             Level level = new Level();
             level.fields = new Field[sizeX][sizeY];
 
+            //Beállítjuk a megfelelő Típusokat a mezőkre
             for (Integer x = 0; x < sizeX; x++) {
                 if ((line = br.readLine()) == null)
                     throw new Exception("Invalid file format, missing line");
@@ -57,13 +64,16 @@ public class FileLoader implements LevelLoader {
                 }
             }
 
+            //léttrehozzuk a játékosok pozícióit tároló Map-et
             level.playerPositions = new HashMap<Player, Position>();
             return level;
         } catch (Exception e) {
             throw new Exception("Error on level file loading", e);
         }
         finally{
-        	br.close();
+        	//Ha nem null a BufferedReader, akkor bezárjuk
+        	if(br != null)
+        		br.close();
         }
     }
 }
