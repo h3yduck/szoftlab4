@@ -1,7 +1,5 @@
 package hu.bme.bitsplease.stepHandler;
 
-import hu.bme.bitsplease.levelHandler.Level;
-
 /**
  * Created by h3yduck on 2/27/15.
  */
@@ -12,7 +10,7 @@ public class ConsoleInput implements InputHandler {
     }
 
     @Override
-    public Level getLevel(){
+    public String getLevel(){
         return null;
     }
 
@@ -30,4 +28,9 @@ public class ConsoleInput implements InputHandler {
     public String getRobotName(){
         return null;
     }
+
+	@Override
+	public int getGameLength() {
+		return 0;
+	}
 }

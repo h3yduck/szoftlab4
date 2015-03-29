@@ -1,12 +1,15 @@
 package hu.bme.bitsplease.gameEngine;
 
+import hu.bme.bitsplease.stepHandler.ConsoleInput;
+import hu.bme.bitsplease.stepHandler.InputHandler;
 import hu.bme.bitsplease.stepHandler.Step;
 import hu.bme.bitsplease.stepHandler.Step.ActionType;
-import hu.bme.bitsplease.App;
+import hu.bme.bitsplease.displayHandler.ConsoleDisplay;
 import hu.bme.bitsplease.levelHandler.FileLoader;
 import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.levelHandler.LevelLoader;
 import hu.bme.bitsplease.levelHandler.Position;
+import hu.bme.bitsplease.playerHandler.LittleRobot;
 import hu.bme.bitsplease.playerHandler.Player;
 import hu.bme.bitsplease.levelHandler.Field;
 
@@ -28,29 +31,20 @@ public class GameEngine {
 
     private List<Player> outPlayers; //Kisesett játékosok
     private List<Player> players; // A játékosok listája
+    private List<LittleRobot> littleRobots;
     //ha egy játékos kiesett, akkor belekerül az outPlayers listába, és az értéke null lesz a players listában
     private Map<Player, Integer> playerScores; // A játékosok pontjai
     
-    public Level getLevel(){
-    	return level;
-    }
-    
     private void deletePlayer(Player player){
-    	if(App.menuItem == 2)
-    		App.printList("[:GameEngine]deletePlayer");
     	outPlayers.add(player);
 		players.set(players.indexOf(player), null);
-    }
-    
-    public Player getPlayer(){
-    	//Visszaadja az első játékost, hogy kívülről tudjuk vizsgálni a szkeletonban
-    	return players.get(0);
     }
     
     public GameEngine(LevelLoader levelLoader) {
         this.levelLoader = levelLoader;
         players = new ArrayList<Player>();
     	outPlayers = new ArrayList<Player>();
+    	littleRobots = new ArrayList<LittleRobot>();
     	playerScores = new HashMap<Player, Integer>();
     }
 
@@ -61,115 +55,23 @@ public class GameEngine {
     }
 
     public void startGame() throws Exception {
-    	//kiírja a függvényhierarchiát
-        App.printList("[:GameEngine]startGame");
-        //switch-case az egyes menüpontokhoz, hogy mit csináljon a gameEngine
-        switch(App.menuItem){
-        case 1:
-        	/*
-        	 * Bekéri a játék elkezdéséhez szükséges adatokat
-        	 */
-        	App.newToList();
-        	getSettings();
-        	break;
-        case 2:
-        	//Beállít megfelelő értékeket, majd elindítja a játékot, melyben egy lépést mutat be
-        	levelLoader = new FileLoader("1");
-        	players.add(new Player(null, null, "TestPlayer"));
-        	players.get(0).actionNums.put(ActionType.OIL, 3);
-            players.get(0).actionNums.put(ActionType.STICK, 3);
-            remainingRounds = 1;
-            level = levelLoader.getLevel();
-            level.playerPositions.put(players.get(0), new Position(0, 0));
-            for(int i = 0; i < level.fields.length; i++){
-                for(int j = 0; j < level.fields[i].length; j++){
-                    if(level.fields[i][j].fieldType == Field.Type.USRPOS){
-                        level.fields[i][j].fieldType = Field.Type.FREE;
-                    }
-                }
-            }
-            App.newToList();
-        	play();
-        	App.removeList();
-            break;
-        case 3:
-        	//Beállít megfelelő értékeket, majd elindítja a játékot, melyben ellép egy speciális elemről
-        	levelLoader = new FileLoader("2");
-        	players.add(new Player(null, null, "TestPlayer"));
-        	players.get(0).actionNums.put(ActionType.OIL, 3);
-            players.get(0).actionNums.put(ActionType.STICK, 3);
-            remainingRounds = 1;
-            level = levelLoader.getLevel();
-            level.playerPositions.put(players.get(0), new Position(4, 4));
-            for(int i = 0; i < level.fields.length; i++){
-                for(int j = 0; j < level.fields[i].length; j++){
-                    if(level.fields[i][j].fieldType == Field.Type.USRPOS){
-                        level.fields[i][j].fieldType = Field.Type.FREE;
-                    }
-                }
-            }
-            App.fromSpecItem(players.get(0), level);
-            App.newToList();
-        	play();
-        	App.removeList();
-        	break;
-        case 4:
-        	//Beállít egy speciális elemet a 0,0 pozícióra, majd elindítja a játékot
-        	//Látható, hpgy eltűnik a speciális elemm
-        	levelLoader = new FileLoader("1");
-            remainingRounds = 4;
-            players.add(null);
-            players.add(null);
-            level = levelLoader.getLevel();
-            for(int i = 0; i < level.fields.length; i++){
-                for(int j = 0; j < level.fields[i].length; j++){
-                    if(level.fields[i][j].fieldType == Field.Type.USRPOS){
-                        level.fields[i][j].fieldType = Field.Type.FREE;
-                    }
-                }
-            }
-            App.getSpecialElement(level);
-            App.newToList();
-        	play();
-        	App.removeList();
-        	break;
-        case 5:
-        	//Bekéri a játékosok adatait, majd kiírj az eredményeket
-        	App.newToList();
-        	getSettings();
-        	App.incrementList();
-        	App.displayScore(playerScores);
-        	App.incrementList();
-        	App.displayCongrat(players.get(0).name);
-        	App.removeList();
-        	break;
-        }
+    	getSettings();
+    	play();
     }
     
     public void getSettings() throws Exception {
-    	//Kiírja a függvényhierarchiát
-        App.printList("[:GameEngine]" + "getSettings");
+    	
+    	InputHandler inputHandler = new ConsoleInput();
         
         if(levelLoader == null){
             //Ha nincs betöltött pálya, akkor lekérdezzük a felhasználótól
-        	if(App.menuItem == 1)
-        		//Csak ha az egyes menüpont van kiválasztva
-        		App.newToList();
-            String levelName = App.getLevel();
+            String levelName = inputHandler.getLevel();
             levelLoader = new FileLoader(levelName);
-
         }
-        
-        if(App.menuItem == 1)
-        	//Csak ha az egyes menüpont van kiválasztva
-        	App.incrementList();
         level = levelLoader.getLevel();
 
         //specialis elemek szamanak lekerdezese
-        if(App.menuItem == 1)
-        	//Csak ha az egyes menüpont van kiválasztva
-        	App.incrementList();
-        int specialTypeNum = App.getSpecialActionTypeNumber();
+        int specialTypeNum = inputHandler.getSpecialActionTypeNumber();
         
         //specialis elemek szamanak beallitasa minden jatekos reszere oil és stickre is
         for(int i = 0; i < players.size(); i++) {
@@ -177,51 +79,25 @@ public class GameEngine {
             players.get(i).actionNums.put(ActionType.STICK, specialTypeNum);
         }
 
-
-
-    	// elso kepernyo, jatekosok szamanak stb... bekerese
-        //jatekosok szamanak lekerdezese
-        if(App.menuItem == 1)
-        	//Csak ha az egyes menüpont van kiválasztva
-        	App.incrementList();
-        else
-        	//Egyébként ez az első
-        	App.newToList();
-        int numOfPlayers = App.getNumOfPlayer();
+        int numOfPlayers = inputHandler.getNumOfPlayer();
         
-        //jatekosok hozzaadas a listahoz, sajat stephandlerrel,displayhandlerrel, konzolbol megadott nevvel
-        App.printTabs();
-        System.out.println("Játékosok nevei?");
-        App.incrementList();
         for(int i = 0; i < numOfPlayers; i++) {
         	//jatekos nevenek lekerdezese
         	boolean goodInput = false;
         	String name = "";
         	while(!goodInput){
         		goodInput = true;
-        		name = App.getRobotName();
+        		name = inputHandler.getRobotName();
         		if(name.length() > 10 && name.length() < 1){
         			goodInput = false;
         		}
         	}
-        	Player player = new Player(null,null, name);
+        	
+        	Player player = new Player(new ConsoleInput(), new ConsoleDisplay(), name);
             players.add(player);
-            
-            //jatekos pontszamanak beallitasa
-            if(App.menuItem != 5){
-            	playerScores.put(player, 0);
-            }
-            else{
-            	//Az 5-ös pontban mi adjuk meg a számokat
-            	playerScores.put(player, 100 - 10 * i);
-            }
         }
-        
-	    //kezdeti korok szamanak lekerdezese
-        if(App.menuItem == 1)
-        	//Csak ha az egyes menüpont van kiválasztva
-        	App.incrementList();
-        remainingRounds = App.getGameLength();
+
+        remainingRounds = inputHandler.getGameLength();
 
         //Az USRPOS mezőket átállítjuk FREE-re
         List<Position> positions = new ArrayList<Position>();
@@ -240,11 +116,9 @@ public class GameEngine {
         		level.playerPositions.put(player, positions.get(random.nextInt(positions.size())));
         	}
         }
-        App.removeList();
     }
 
     public void play() {
-    	App.printList("[:GameEngine]play");
     	/*
          * tenyleges jatek mechanika
          * minden lepes vegen meg kell hivni minden jatekos DisplayHandleret, és kirajzolni a pályát
@@ -252,12 +126,18 @@ public class GameEngine {
          * frissiteni kell a jatekosok pontjait
     	 */
     	
+    	/*
+    	 * Kirajzoljuk minden játékosnál a pályát
+    	 */
+    	for(Player player : players){ 
+    		player.displayLevel(level);
+    	}
+    	
     	Boolean EndOfTheGame = false;
     	
         /*
          *  A játék addig fut, amíg az EndOfTheGame változó false
          */
-    	App.newToList();
         while(!EndOfTheGame){
 
             /*
@@ -269,8 +149,6 @@ public class GameEngine {
             	if(player == null){
             		continue;
             	}
-            	// Megjelenítjük a kezdeti pályát
-            	App.displayLevel(level);
             	
             	// Megnézzük, hogy milyen mezőn áll a robot
             	// Ha FREE-n, akkor bekérjük a lépést
@@ -285,7 +163,7 @@ public class GameEngine {
             			 * Ha nem megfelelő a lerakott elem, akkor újra kérdezzük a felhasználót
             			 */
             			
-            			goodStep = true;
+            			//goodStep = true;
             			
 	            		actualStep = player.getStep();
 	            		
@@ -294,7 +172,7 @@ public class GameEngine {
 	            		 * Ha van, akkor lerakjuk a mezőre és csökkentjük a kapacitást
 	            		 */
 
-                        if(!(actualStep.stepAction == null)){
+                        /*if(!(actualStep.stepAction == null)){
 	            			if(player.actionNums.get(actualStep.stepAction) > 0){
 	            				if(actualStep.stepAction == Step.ActionType.OIL)
 	            					level.fields[level.playerPositions.get(player).y][level.playerPositions.get(player).x].fieldType = Field.Type.fromChar('O');
@@ -303,10 +181,9 @@ public class GameEngine {
 	            				level.fields[level.playerPositions.get(player).y][level.playerPositions.get(player).y].remainingRounds = 3;
 	            				player.actionNums.put(actualStep.stepAction, player.actionNums.get(actualStep.stepAction)-1);
 	            			}else{
-	            				System.out.println("You don't have any" + actualStep.stepAction.toString());
 	            				goodStep = false;
 	            			}
-	            		}
+	            		}*/
             		}
             		
             		/*
@@ -331,6 +208,11 @@ public class GameEngine {
             		 * A sebesség a fele az eddiginek
             		 */
             		player.velocity.size /= 2;
+            		int pos[] = {
+            			level.playerPositions.get(player).x, 
+            			level.playerPositions.get(player).y
+            		};
+            		level.fields[pos[0]][pos[1]].remainingRounds--;
             	break;
             	default:
             		// Nem lehetséges
@@ -352,8 +234,6 @@ public class GameEngine {
             	if((actualX < 0) || (actualX >= level.fields[0].length)
             	|| (actualY < 0) || (actualY >= level.fields.length)
             	|| (level.fields[actualY][actualX].fieldType == Field.Type.HOLE)){
-            		if(App.menuItem == 2)
-            			App.incrementList();
             		deletePlayer(player);
             		player = null;
             	}else{
@@ -361,23 +241,16 @@ public class GameEngine {
             		int newScore = Math.abs(actualX-level.playerPositions.get(player).x)
             				     + Math.abs(actualY-level.playerPositions.get(player).y);
             		playerScores.put(player, newScore);
-            		
-            		App.incrementList();
+
             		player.addScore(newScore);
             		
             		level.playerPositions.put(player, new Position(actualX, actualY));
             	}
             	
-            	App.incrementList();
-            	if(player == null){
+            	if(player != null){
             		//Ha a játékos null, akkor a játékos kiesett
-            		System.out.println();
-            		App.printTabs();
-    				System.out.println("A játékos kiesett!");
-    				System.out.println();
-    				App.displayLevel(level);
-    			}else{
-    				player.displayLevel(level);
+            		//egyébként kirjzoljuk az új pálya állapotot
+            		player.displayLevel(level);
     			}
             	
             }
@@ -390,7 +263,9 @@ public class GameEngine {
             for(int i = 0; i < level.fields.length; i++){
         		for(int j = 0; j < level.fields[i].length; j++){
         			if(level.fields[i][j].remainingRounds > 0){
-        				level.fields[i][j].remainingRounds--;
+        					if(level.fields[i][j].fieldType == Field.Type.OIL){
+        						level.fields[i][j].remainingRounds--;
+        					}
         			}
         			else{
         				if(level.fields[i][j].fieldType == Field.Type.OIL || level.fields[i][j].fieldType == Field.Type.STICK){
@@ -408,17 +283,6 @@ public class GameEngine {
         		EndOfTheGame = true;
         	}
         	
-        	//A 4-es menüpontban azt nézzük, hogy hogyan tűnik el egy folt
-        	if(App.menuItem == 4){
-        		App.printTabs();
-            	System.out.println("A hátraléve körök, amíg ott lesz a folt: " + (level.fields[0][0].remainingRounds));
-            	App.displayLevel(level);
-            }
-        	
-        	App.incrementList();
-        	
         }
-        
-        App.removeList();
     }
 }

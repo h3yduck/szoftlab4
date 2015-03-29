@@ -1,6 +1,6 @@
 package hu.bme.bitsplease.levelHandler;
 
-import hu.bme.bitsplease.playerHandler.Player;
+import hu.bme.bitsplease.playerHandler.Robot;
 
 import java.util.Map;
 
@@ -9,5 +9,5 @@ import java.util.Map;
  */
 public class Level {
     public Field fields[][];
-    public Map<Player, Position> playerPositions;
+    public Map<Robot, Position> playerPositions;
 }

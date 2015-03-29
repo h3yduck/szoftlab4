@@ -1,7 +1,6 @@
 package hu.bme.bitsplease.levelHandler;
 
-import hu.bme.bitsplease.App;
-import hu.bme.bitsplease.playerHandler.Player;
+import hu.bme.bitsplease.playerHandler.Robot;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -26,9 +25,6 @@ public class FileLoader implements LevelLoader {
 
     @Override
     public Level getLevel() throws Exception {
-    	//Kiírjuk a függvény hierarchiát
-    	if(App.menuItem == 1)
-    		App.printList("[:FileLoader]getLevel");
     	
         BufferedReader br = null;
         try {
@@ -65,7 +61,7 @@ public class FileLoader implements LevelLoader {
             }
 
             //léttrehozzuk a játékosok pozícióit tároló Map-et
-            level.playerPositions = new HashMap<Player, Position>();
+            level.playerPositions = new HashMap<Robot, Position>();
             return level;
         } catch (Exception e) {
             throw new Exception("Error on level file loading", e);

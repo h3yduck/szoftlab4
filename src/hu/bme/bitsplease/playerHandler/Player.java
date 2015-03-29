@@ -1,6 +1,5 @@
 package hu.bme.bitsplease.playerHandler;
 
-import hu.bme.bitsplease.App;
 import hu.bme.bitsplease.displayHandler.DisplayHandler;
 import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.stepHandler.Step;
@@ -12,13 +11,12 @@ import java.util.Map;
 /**
  * Created by h3yduck on 2/27/15.
  */
-public class Player {
+public class Player extends Robot{
     private InputHandler stepHandler;
     private DisplayHandler displayHandler;
 
     public String name;
     private int score;
-    public Velocity velocity;
 
     public Map<Step.ActionType, Integer> actionNums;
 
@@ -30,30 +28,21 @@ public class Player {
         actionNums = new HashMap<Step.ActionType, Integer>();
         velocity = new Velocity();
     }
-
+    
     public Step getStep() {
-    	if(App.menuItem == 2)
-    		App.printList("[:Player]getStep");
-    	App.newToList();
     	//Bekérjük névvel a lépést
-        Step actualStep = App.getStep(name);
-    	App.removeList();
+        Step actualStep = stepHandler.getStep(name);
     	return actualStep;
     }
 
     public void displayLevel(Level actualLevelState) {
-    	if(App.menuItem == 2)
-    		App.printList("[:Player]displayLevel");
-    	App.newToList();
-        App.displayLevel(actualLevelState);
-        App.removeList();
+        displayHandler.displayLevel(actualLevelState);
     }
 
     public void addScore(int plusScore) {
-    	if(App.menuItem == 2)
-    		App.printList("[:Player]addScore");
         score += plusScore;
     }
+    
     public int getScore(){
     	return score;
     }
