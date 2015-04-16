@@ -54,12 +54,18 @@ public class GameEngine {
     	playerScores = new HashMap<Player, Integer>();
     }
 
-    public void startGame() throws Exception {
-    	getSettings();
-    	play();
+    public void startGame() {
+    	getSettings(null);
+    	
+        /*
+         *  A játék addig fut, amíg a play függvény igazat ad vissza
+         *  null -> parancsok nélkül futtatás
+         */
+    	
+    	while(play(null));
     }
     
-    public void getSettings() throws Exception {
+    public void getSettings(String command){
     	
     	InputHandler inputHandler = new ConsoleInput();
         
@@ -73,11 +79,7 @@ public class GameEngine {
         //specialis elemek szamanak lekerdezese
         int specialTypeNum = inputHandler.getSpecialActionTypeNumber();
         
-        //specialis elemek szamanak beallitasa minden jatekos reszere oil és stickre is
-        for(int i = 0; i < players.size(); i++) {
-            players.get(i).actionNums.put(ActionType.OIL, specialTypeNum);
-            players.get(i).actionNums.put(ActionType.STICK, specialTypeNum);
-        }
+        
 
         int numOfPlayers = inputHandler.getNumOfPlayer();
         
@@ -95,6 +97,12 @@ public class GameEngine {
         	
         	Player player = new Player(new ConsoleInput(), new ConsoleDisplay(), name);
             players.add(player);
+        }
+        
+      //specialis elemek szamanak beallitasa minden jatekos reszere oil és stickre is
+        for(int i = 0; i < players.size(); i++) {
+            players.get(i).actionNums.put(ActionType.OIL, specialTypeNum);
+            players.get(i).actionNums.put(ActionType.STICK, specialTypeNum);
         }
 
         remainingRounds = inputHandler.getGameLength();
@@ -118,7 +126,7 @@ public class GameEngine {
         }
     }
 
-    public void play() {
+    public boolean play(String comamnd) {
     	/*
          * tenyleges jatek mechanika
          * minden lepes vegen meg kell hivni minden jatekos DisplayHandleret, és kirajzolni a pályát
@@ -132,13 +140,7 @@ public class GameEngine {
     	for(Player player : players){ 
     		player.displayLevel(level);
     	}
-    	
-    	Boolean EndOfTheGame = false;
-    	
-        /*
-         *  A játék addig fut, amíg az EndOfTheGame változó false
-         */
-        while(!EndOfTheGame){
+
 
             /*
              *  Minden játékostól megkérdezzük mit lép, és változtatjuk eszerint az állapotát
@@ -280,9 +282,9 @@ public class GameEngine {
         	
             //Ha lejárt az idő vagy már csak egy játékos van, akkor kilépünk
         	if(remainingRounds <= 0 || outPlayers.size() >= players.size()-1){
-        		EndOfTheGame = true;
+        		return false;
         	}
+        	return true;
         	
-        }
     }
 }

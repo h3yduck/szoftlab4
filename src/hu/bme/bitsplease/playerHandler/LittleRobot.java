@@ -19,4 +19,8 @@ public class LittleRobot extends Robot {
 		}
 		return false;
 	}
+	
+	public int getRemainingCleaningTime(){
+		return remainingCleaningTime;
+	}
 }

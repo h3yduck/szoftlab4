@@ -4,6 +4,7 @@ import hu.bme.bitsplease.playerHandler.Robot;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -24,35 +25,44 @@ public class FileLoader implements LevelLoader {
     }
 
     @Override
-    public Level getLevel() throws Exception {
+    public Level getLevel(){
     	
         BufferedReader br = null;
+        Level level = null;
         try {
         	//BufferedReader a megfelelő file-hoz
             br = new BufferedReader(new FileReader(pathToLevelFile));
             String line;
 
-            if ((line = br.readLine()) == null)
-                throw new Exception("Invalid file format, maybe empty file");
+            if ((line = br.readLine()) == null){
+            	br.close();
+                throw new IOException("Invalid file format, maybe empty file");
+            }
             
             //Az első sor a pályát jelképező mátrix mérete, azaz két int
             String[] parts = line.split("\\s+");
-            if (parts.length != 2)
-                throw new Exception("Invalid file format");
+            if (parts.length != 2){
+            	br.close();
+                throw new IOException("Invalid file format");
+            }
             Integer sizeX = Integer.parseInt(parts[0]);
             Integer sizeY = Integer.parseInt(parts[1]);
 
             //Létrehozzuk az új pályát
-            Level level = new Level();
+            level = new Level();
             level.fields = new Field[sizeX][sizeY];
 
             //Beállítjuk a megfelelő Típusokat a mezőkre
             for (Integer x = 0; x < sizeX; x++) {
-                if ((line = br.readLine()) == null)
-                    throw new Exception("Invalid file format, missing line");
+                if ((line = br.readLine()) == null){
+                	br.close();
+                    throw new IOException("Invalid file format, missing line");
+                }
 
-                if (line.length() != sizeY)
-                    throw new Exception("Invalid file format, line length is not ok");
+                if (line.length() != sizeY){
+                	br.close();
+                    throw new IOException("Invalid file format, line length is not ok");
+                }
 
                 for (Integer y = 0; y < sizeY; y++) {
                     Field.Type type = Field.Type.fromChar(line.charAt(y));
@@ -62,14 +72,11 @@ public class FileLoader implements LevelLoader {
 
             //léttrehozzuk a játékosok pozícióit tároló Map-et
             level.playerPositions = new HashMap<Robot, Position>();
-            return level;
-        } catch (Exception e) {
-            throw new Exception("Error on level file loading", e);
+            
+            br.close();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
         }
-        finally{
-        	//Ha nem null a BufferedReader, akkor bezárjuk
-        	if(br != null)
-        		br.close();
-        }
+        return level;
     }
 }

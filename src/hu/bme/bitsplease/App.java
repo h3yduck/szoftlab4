@@ -6,8 +6,7 @@ public class App {
 	
 	public static GameEngine gameEngine;
 	
-    public static void main(String[] args) throws Exception {
-    	
+    public static void main(String[] args){
         gameEngine = new GameEngine();
         gameEngine.startGame();
     }
