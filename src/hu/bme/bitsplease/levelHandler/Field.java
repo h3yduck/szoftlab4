@@ -11,13 +11,16 @@ public class Field {
         FREE('F'),
         OIL('O'),
         STICK('S');
-
+        
+        // Karakter, amely azonosítja a típust
         public char key;
-
+        
+        // Karakter beállítása
         Type(char key) {
             this.key = key;
         }
-
+        
+        // Karakterből beállítja a típust
         public static Type fromChar(char c) {
             for (Type t : Type.values())
                 if (c == t.key)

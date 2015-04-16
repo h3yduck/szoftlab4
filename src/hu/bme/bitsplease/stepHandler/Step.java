@@ -9,12 +9,15 @@ public class Step {
     	OIL('O'),
         STICK('S');
 
+    	// típust leíró karakter
         public char key;
 
+        // Karakter beállítása
         ActionType(char key) {
             this.key = key;
         }
-
+        
+        // Karakterből beállítja a típust
         public static ActionType fromChar(char c) {
             for (ActionType t : ActionType.values())
                 if (c == t.key)

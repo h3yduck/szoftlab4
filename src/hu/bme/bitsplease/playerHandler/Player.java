@@ -17,6 +17,9 @@ public class Player extends Robot{
 
     public String name;
     private int score;
+    
+    public int number;
+    private static int snumber = 1;
 
     public Map<Step.ActionType, Integer> actionNums;
 
@@ -26,7 +29,10 @@ public class Player extends Robot{
         this.name = name;
         this.score = 0;
         actionNums = new HashMap<Step.ActionType, Integer>();
+        actionNums.put(Step.ActionType.OIL, 0);
+        actionNums.put(Step.ActionType.STICK, 0);
         velocity = new Velocity();
+        number = snumber++;
     }
     
     public Step getStep() {
@@ -34,9 +40,17 @@ public class Player extends Robot{
         Step actualStep = stepHandler.getStep(name);
     	return actualStep;
     }
+    
+    public void displaySpecialActionTypesNumber(){
+    	displayHandler.displaySpecialActionTypesNumber(actionNums.get(Step.ActionType.OIL), actionNums.get(Step.ActionType.STICK));
+    }
 
     public void displayLevel(Level actualLevelState) {
         displayHandler.displayLevel(actualLevelState);
+    }
+    
+    public void displayError(String error) {
+        displayHandler.displayError(error);
     }
 
     public void addScore(int plusScore) {
