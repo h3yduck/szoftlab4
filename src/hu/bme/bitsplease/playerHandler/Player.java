@@ -60,4 +60,8 @@ public class Player extends Robot{
     public int getScore(){
     	return score;
     }
+    
+    public static void resetSNum(){
+    	snumber = 1;
+    }
 }

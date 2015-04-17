@@ -53,7 +53,7 @@ public class ConsoleDisplay implements DisplayHandler {
     @Override
     public void displayScore(Map<Player, Integer> score){
     	for(Entry<Player, Integer> entry : score.entrySet()){
-    		System.out.println(entry.getKey() + " - " + entry.getValue());
+    		System.out.println(entry.getKey().name + " - " + entry.getValue());
     	}
     	System.out.println();
     }

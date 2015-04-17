@@ -23,4 +23,8 @@ public class LittleRobot extends Robot {
 	public int getRemainingCleaningTime(){
 		return remainingCleaningTime;
 	}
+	
+	public void setRemainingCleaningTime(){
+		remainingCleaningTime = 2;
+	}
 }

@@ -17,6 +17,7 @@ import hu.bme.bitsplease.levelHandler.Field;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,9 +34,14 @@ public class GameEngine {
 	
 	// A játékban hátramaradt körök száma
 	private int remainingRounds;
+	
+	private int originalRounds;
 
 	private List<Player> outPlayers; // Kisesett játékosok
 	private List<Player> players; // A játékosok listája
+	
+	private InputHandler input;
+	private DisplayHandler display;
 	
 	private List<LittleRobot> littleRobots;
 	
@@ -46,6 +52,7 @@ public class GameEngine {
 	private void deletePlayer(Player player) {
 		outPlayers.add(player);
 		players.set(players.indexOf(player), null);
+		level.playerPositions.remove(player);
 	}
 
 	public GameEngine(LevelLoader levelLoader) {
@@ -54,12 +61,17 @@ public class GameEngine {
 		outPlayers = new ArrayList<Player>();
 		littleRobots = new ArrayList<LittleRobot>();
 		playerScores = new HashMap<Player, Integer>();
+		remainingRounds = 10;
+		originalRounds = remainingRounds;
 	}
 
 	public GameEngine() {
 		players = new ArrayList<Player>();
 		outPlayers = new ArrayList<Player>();
+		littleRobots = new ArrayList<LittleRobot>();
 		playerScores = new HashMap<Player, Integer>();
+		remainingRounds = 10;
+		originalRounds = remainingRounds;
 	}
 
 	public void startGame() {
@@ -71,29 +83,53 @@ public class GameEngine {
 		 */
 
 		while (play(null));
+		
+		Player maxScorePlayer = null;
+		int maxScore = -1;
+		for(Player player : players){
+			if(player != null && playerScores.get(player) > maxScore){
+				maxScorePlayer = player;
+				maxScore = playerScores.get(maxScorePlayer);
+			}
+		}
+		
+		for(Player player : outPlayers){
+			if(playerScores.get(player) > maxScore){
+				maxScorePlayer = player;
+				maxScore = playerScores.get(maxScorePlayer);
+			}
+		}
+		
+		display.displayCongrat(maxScorePlayer.name);
 	}
 
 	public boolean getSettings(String command) {
 
-		InputHandler inputHandler = new ConsoleInput();
-		DisplayHandler displayHandler = new ConsoleDisplay();
+		input = new ConsoleInput();
+		display = new ConsoleDisplay();
 		
-		String levelName = inputHandler.getLevel();
+		players.clear();
+		outPlayers.clear();
+		littleRobots.clear();
+		playerScores.clear();
+		
+		String levelName = input.getLevel();
 		levelLoader = new FileLoader(levelName);
 		level = levelLoader.getLevel();
 
 		// specialis elemek szamanak lekerdezese
-		int specialTypeNum = inputHandler.getSpecialActionTypeNumber();
+		int specialTypeNum = input.getSpecialActionTypeNumber();
 
-		int numOfPlayers = inputHandler.getNumOfPlayer();
+		int numOfPlayers = input.getNumOfPlayer();
+		
 
 		for (int i = 0; i < numOfPlayers; i++) {
 			// jatekos nevenek lekerdezese
-			String name = inputHandler.getRobotName();
+			String name = input.getRobotName();
 
-			Player player = new Player(inputHandler,
-					displayHandler, name);
+			Player player = new Player(input, display, name);
 			players.add(player);
+			playerScores.put(player, 0);
 		}
 
 		// specialis elemek szamanak beallitasa minden jatekos reszere oil és
@@ -103,7 +139,8 @@ public class GameEngine {
 			players.get(i).actionNums.put(ActionType.STICK, specialTypeNum);
 		}
 
-		remainingRounds = inputHandler.getGameLength();
+		remainingRounds = input.getGameLength();
+		originalRounds = remainingRounds;
 
 		// Az USRPOS mezőket átállítjuk FREE-re
 		List<Position> positions = new ArrayList<Position>();
@@ -117,8 +154,9 @@ public class GameEngine {
 		}
 		
 		if(positions.size() < players.size()){
-			displayHandler.displayError("Túl sok játékost adtál meg a kiválasztott pályához. "
+			display.displayError("Túl sok játékost adtál meg a kiválasztott pályához. "
 					+ "Adj meg másik pályát vagy kevesebb játékost.");
+			Player.resetSNum();
 			return true;
 		}
 		
@@ -130,12 +168,12 @@ public class GameEngine {
 			positions.remove(rand);
 		}
 		
-		displayHandler.displayLevel(level);
+		display.displayLevel(level);
 		
 		return false;
 	}
 
-	public boolean play(String comamnd) {
+	public boolean play(String command) {
 		/*
 		 * tenyleges jatek mechanika minden lepes vegen meg kell hivni minden
 		 * jatekos DisplayHandleret, és kirajzolni a pályát minden lepeskor az
@@ -156,8 +194,8 @@ public class GameEngine {
 
 			// Megnézzük, hogy milyen mezőn áll a robot
 			// Ha FREE-n, akkor bekérjük a lépést
-			switch (level.fields[level.playerPositions.get(player).y][level.playerPositions
-					.get(player).x].fieldType) {
+			switch (level.fields[level.playerPositions.get(player).y]
+					[level.playerPositions.get(player).x].fieldType) {
 			case FREE:
 				boolean goodStep = false;
 				Step actualStep = null;
@@ -165,8 +203,7 @@ public class GameEngine {
 				while (!goodStep) {
 
 					/*
-					 * Ha nem megfelelő a lerakott elem, akkor újra kérdezzük a
-					 * felhasználót
+					 * Ha nem megfelelő a lerakott elem, akkor újra kérdezzük a felhasználót
 					 */
 
 					goodStep = true;
@@ -235,6 +272,8 @@ public class GameEngine {
 				break;
 			default:
 				// Nem lehetséges
+				level.fields[level.playerPositions.get(player).y]
+							[level.playerPositions.get(player).x].fieldType = Field.Type.FREE;
 				break;
 			}
 
@@ -253,12 +292,12 @@ public class GameEngine {
 			 * Ha kiesik, akkor nullra állítjuk a listában és belerakjuk a
 			 * kiesettek listájába
 			 */
-
+			
 			if ((actualX < 0)
-					|| (actualX >= level.fields[0].length)
-					|| (actualY < 0)
-					|| (actualY >= level.fields.length)
-					|| (level.fields[actualY][actualX].fieldType == Field.Type.HOLE)) {
+			 || (actualX >= level.fields[0].length)
+			 || (actualY < 0)
+			 || (actualY >= level.fields.length)
+			 || (level.fields[actualY][actualX].fieldType == Field.Type.HOLE)) {
 				deletePlayer(player);
 				player = null;
 			} else {
@@ -271,21 +310,70 @@ public class GameEngine {
 
 				player.addScore(newScore);
 
+				/*
+				 * Áthelyezzük a robotot az új helyére, majd kirajzoljuk a pályát
+				 */
+				
 				level.playerPositions.put(player,
+				
 						new Position(actualX, actualY));
 			}
-
-			if (player != null) {
-				// Ha a játékos null, akkor a játékos kiesett
-				// egyébként kirjzoljuk az új pálya állapotot
-				player.displayLevel(level);
+			
+			/*
+			 * Ha a robot ragacsra lépett, akkor csökkentjük a ragacs élettartamát
+			 * ha player null, akkor a robot lelépett a pályáról, ezért nem léphetett ragacsra
+			 */
+			
+			if(player != null && level.fields[actualY][actualX].fieldType == Field.Type.STICK){
+				level.fields[actualY][actualX].remainingRounds--;
 			}
-
+			
+			display.displayLevel(level);
+			
+			
+		
+		}
+		
+		for(LittleRobot little : littleRobots){
+			
+			Position actual = level.playerPositions.get(little);
+			
+			if((!little.isCleaning())){
+				
+			}else if(little.getRemainingCleaningTime() == 0){
+				level.fields[actual.y][actual.x].fieldType = Field.Type.FREE;
+			}else{
+				LinkedList<Position> positions = new LinkedList<Position>();
+				positions.addLast(actual);
+				Position specialPosition = getNearestGoodField(positions, true);
+				if(specialPosition != null){
+					little.velocity.size = 1;
+					little.velocity.angle = Math.atan2(actual.y - specialPosition.y, actual.x - specialPosition.x) * 180 / Math.PI;
+				}
+			}
+			
+			int actualX = actual.x
+					+ (int) Math.round(little.velocity.size
+							* Math.cos(little.velocity.angle * Math.PI / 180));
+			int actualY = actual.y
+					- (int) Math.round(little.velocity.size
+					* Math.sin(little.velocity.angle * Math.PI / 180));
+			
+			level.playerPositions.put(little,
+					new Position(actualX, actualY));
+			
+			if(level.fields[actualY][actualX].fieldType == Field.Type.OIL 
+			 ||level.fields[actualY][actualX].fieldType == Field.Type.STICK){
+				little.setRemainingCleaningTime();
+			}
+			
 		}
 
 		/*
-		 * Csökkentjük az időt, amíg fenn vannak a speciális elemek Ha elfogyott
-		 * az idő az előző körben, akkor levesszük
+		 * Végignézzük a mezőket
+		 * Ha oljafolt van, akkor csökkentjük az hátralévő időt
+		 * Ha 0 a hátralévő idő, akkor töröljük
+		 * 
 		 */
 
 		for (int i = 0; i < level.fields.length; i++) {
@@ -294,23 +382,83 @@ public class GameEngine {
 					if (level.fields[i][j].fieldType == Field.Type.OIL) {
 						level.fields[i][j].remainingRounds--;
 					}
-				} else {
-					if (level.fields[i][j].fieldType == Field.Type.OIL
-							|| level.fields[i][j].fieldType == Field.Type.STICK) {
+				}
+				if (level.fields[i][j].remainingRounds == 0 && (level.fields[i][j].fieldType == Field.Type.OIL || level.fields[i][j].fieldType == Field.Type.STICK)) {
 						level.fields[i][j].fieldType = Field.Type.FREE;
-					}
 				}
 			}
 		}
 
 		// Csökkentjük a hátralévő körök számát
 		remainingRounds--;
+		
+		if(originalRounds - remainingRounds % 10 == 0){
+			LittleRobot little = new LittleRobot();
+			Random random = new Random();
+			int newX = random.nextInt(level.fields[0].length);
+			int newY = random.nextInt(level.fields.length);
+			boolean goodPosition = true;
+			for(Entry<Robot, Position> i : level.playerPositions.entrySet()){
+				if(i.getValue().x == newX && i.getValue().y == newY){
+					goodPosition = false;
+				}
+			}
+			if(!goodPosition){
+				LinkedList<Position> positions = new LinkedList<Position>();
+				positions.addLast(new Position(newX, newY));
+				Position newPosition = getNearestGoodField(positions, false);
+				if(newPosition != null){
+					level.playerPositions.put(little, newPosition);
+					littleRobots.add(little);
+				}
+			}else{
+				level.playerPositions.put(little, new Position(newX, newY));
+				littleRobots.add(little);
+			}
+		}
 
 		// Ha lejárt az idő vagy már csak egy játékos van, akkor kilépünk
 		if (remainingRounds <= 0 || outPlayers.size() >= players.size() - 1) {
 			return false;
 		}
+		
+		display.displayRound(String.valueOf(remainingRounds));
+		
+		display.displayLevel(level);
+		
 		return true;
 
+	}
+	
+	private Position getNearestGoodField(LinkedList<Position> positions, boolean special){
+		Position actualPos;
+		if((actualPos = positions.pollFirst()) == null){
+			return null;
+		}else{
+			for(int i = actualPos.y - 1; i <= actualPos.y + 1; i++){
+				for(int j = actualPos.x - 1; j <= actualPos.x + 1; j++){
+					if(special){
+						if(level.fields[j][i].fieldType == Field.Type.OIL || level.fields[j][i].fieldType == Field.Type.STICK){
+							return new Position(j, i);
+						}else{
+							positions.addLast(new Position(j, i));
+						}
+					}else{
+						boolean goodPosition = true;
+						for(Entry<Robot, Position> entry : level.playerPositions.entrySet()){
+							if(entry.getValue().x == actualPos.x && entry.getValue().y == actualPos.y){
+								goodPosition = false;
+							}
+						}
+						if(goodPosition){
+							return new Position(j, i);
+						}else{
+							positions.addLast(new Position(j, i));
+						}
+					}
+				}
+			}
+			return getNearestGoodField(positions, special);
+		}
 	}
 }
