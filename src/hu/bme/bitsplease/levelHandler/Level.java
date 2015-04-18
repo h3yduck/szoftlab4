@@ -10,4 +10,5 @@ import java.util.Map;
 public class Level {
     public Field fields[][];
     public Map<Robot, Position> playerPositions;
+
 }
