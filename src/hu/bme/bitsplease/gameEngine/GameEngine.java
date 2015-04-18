@@ -402,8 +402,7 @@ public class GameEngine {
 
 				// Megnézzük, hogy milyen mezőn áll a robot
 				// Ha FREE-n, akkor bekérjük a lépést
-				switch (level.fields[level.playerPositions.get(player).y][level.playerPositions
-						.get(player).x].fieldType) {
+				switch (level.fields[level.playerPositions.get(player).y][level.playerPositions.get(player).x].fieldType) {
 				case FREE:
 					boolean goodStep = false;
 					Step actualStep = null;
@@ -422,17 +421,14 @@ public class GameEngine {
 						} else {
 							try {
 								actualStep = new Step();
-								actualStep.angle = Integer
-										.parseInt(commandArray[1]) % 360;
-								switch (commandArray[2]) {
-								case "O":
-								case "F":
-									actualStep.stepAction = Step.ActionType
-											.fromChar(commandArray[2].charAt(0));
-									break;
+								actualStep.angle = Integer.parseInt(commandArray[1]) % 360;
+								if(commandArray[2].equals("O") || commandArray[2].equals("S")) {
+									actualStep.stepAction = Step.ActionType.fromChar(commandArray[2].charAt(0));
+								}else if(!commandArray[2].equals("F")){
+									System.err.println("Hibás paraméterek az adott parancshoz!");
 								}
 							} catch (NumberFormatException ex) {
-
+								System.err.println("Hibás paraméterek az adott parancshoz!");
 							}
 						}
 
