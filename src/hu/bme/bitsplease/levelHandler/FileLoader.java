@@ -13,6 +13,29 @@ import java.util.HashMap;
 public class FileLoader implements LevelLoader {
 	private String pathToLevelFile;
 
+	public FileLoader(){
+		Level level = new Level();
+		level.fields = new Field[100][100];
+		
+		for(int i = 0; i < 100; i++){
+			for(int j = 0; j < 100; j++){
+				level.fields[i][j] = new Field(Field.Type.FREE, 0);
+			}
+		}
+		
+		level.fields[20][45].fieldType = Field.Type.USRPOS;
+		level.fields[32][15].fieldType = Field.Type.USRPOS;
+		level.fields[45][75].fieldType = Field.Type.USRPOS;
+		level.fields[80][20].fieldType = Field.Type.USRPOS;
+		level.fields[62][10].fieldType = Field.Type.USRPOS;
+		level.fields[49][35].fieldType = Field.Type.USRPOS;
+		level.fields[95][2].fieldType = Field.Type.USRPOS;
+		level.fields[2][80].fieldType = Field.Type.USRPOS;
+		level.fields[58][50].fieldType = Field.Type.USRPOS;
+		level.fields[45][20].fieldType = Field.Type.USRPOS;
+		
+	}
+	
 	public FileLoader(String pathToLevelFile) {
 		this.pathToLevelFile = pathToLevelFile;
 	}
@@ -70,7 +93,7 @@ public class FileLoader implements LevelLoader {
 
 				for (Integer y = 0; y < sizeY; y++) {
 					Field.Type type = Field.Type.fromChar(line.charAt(y));
-					level.fields[x][y] = new Field(type, 10);
+					level.fields[x][y] = new Field(type, 0);
 				}
 			}
 
