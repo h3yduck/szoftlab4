@@ -559,12 +559,7 @@ public class GameEngine {
 						//akkor a mezőn olajfolt keletkezik
 						level.fields[i.getValue().x][i.getValue().y].fieldType = Field.Type.OIL;
 						level.fields[i.getValue().x][i.getValue().y].remainingRounds = 3;
-<<<<<<< HEAD
 
-=======
-						//ha a robot egy olyan mezőre lép, ahol egy kisrobot található, akkor kiüti
-						//a kisrobotot
->>>>>>> 95c59c3eff0108b9c9341992951e2897427d6d55
 						if(i.getKey().getClass().toString().equals("LittleRobot")){
 							it.remove();
 						//ha a robot egy olyan mezőre lép, ahol egy másik robot található,
@@ -607,33 +602,7 @@ public class GameEngine {
 				 * Ha kiesik, akkor nullra állítjuk a listában és belerakjuk a
 				 * kiesettek listájába
 				 */
-<<<<<<< HEAD
 
-				if ((actualX < 0)
-						|| (actualX >= level.fields[0].length)
-						|| (actualY < 0)
-						|| (actualY >= level.fields.length)
-						|| (level.fields[actualY][actualX].fieldType == Field.Type.HOLE)) {
-					deletePlayer(player);
-					player = null;
-				} else {
-					// Hozzáadjuk az új pontszámot az eddigihez
-					int newScore = Math.abs(actualX
-							- level.playerPositions.get(player).x)
-							+ Math.abs(actualY
-									- level.playerPositions.get(player).y);
-					playerScores.put(player, newScore);
-
-					player.addScore(newScore);
-
-					/*
-					 * Áthelyezzük a robotot az új helyére, majd kirajzoljuk a
-					 * pályát
-					 */
-
-					level.playerPositions.put(player,new Position(actualX, actualY));
-				}
-=======
 			    if(player != null){
 					if ((actualX < 0)
 							|| (actualX >= level.fields[0].length)
@@ -662,7 +631,6 @@ public class GameEngine {
 						new Position(actualX, actualY));
 					}
 			    }
->>>>>>> f2f709f70a54e9fcb1f3a669b6eaf955842af081
 
 				/*
 				 * Ha a robot ragacsra lépett, akkor csökkentjük a ragacs
@@ -781,14 +749,6 @@ public class GameEngine {
 			remainingRounds--;
 
 		}
-<<<<<<< HEAD
-
-		if (command == null || commandArray[0].equals("step") || commandArray[0].equals("setLittleRobotPosition")){
-				if ((originalRounds - remainingRounds) % 10 == 0 || commandArray[0].equals("setLittleRobotPosition")) {
-					LittleRobot little = new LittleRobot();
-					int newX = 0;
-					int newY = 0;
-=======
 		//ha a parancs step vagy setLittleRobotPosition volt, vagy normál mód fut, akkor
 		//minden 10 körben, vagy minden alkalommal, amikor setLittleRobotPosition parancsot adtunk meg
 		if (command == null || commandArray[0].equals("step")
@@ -801,7 +761,6 @@ public class GameEngine {
 					int newX = 0;
 					int newY = 0;
 					//ha lejárt a 10 kör, akkor random helyre generáljuk az egyik kis robotot
->>>>>>> 95c59c3eff0108b9c9341992951e2897427d6d55
 					if (command == null || (commandArray[0].equals("step") && TestApp.littleRandom)) {
 						Random random = new Random();
 						newX = random.nextInt(level.fields[0].length);
