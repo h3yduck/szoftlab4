@@ -181,8 +181,7 @@ public class GameEngine {
 				numOfPlayers = Integer.parseInt(commandArray[1]);
 			} catch (NumberFormatException ex) {
 				numOfPlayers = 0;
-				System.err
-						.println("0-nál nagyobb egész számot adj meg paraméterként!");
+				System.err.println("0-nál nagyobb egész számot adj meg paraméterként!");
 			}
 		}
 
@@ -307,7 +306,7 @@ public class GameEngine {
 					System.err.println("A parancs paramétere 0 vagy 1 legyen!");
 				}
 			} catch (NumberFormatException ex) {
-				System.err.println("A parancs paramétere 0 vagy 1 legyen!");
+				System.err.println("Hibás paraméterek az adott parancshoz!");
 			}
 		}
 		
@@ -339,17 +338,22 @@ public class GameEngine {
 		}
 		
 		
-		/***EDDIG VAGYOK MEG!!!!*/
-
+		//Parancs-mód esetén a (setLittleRobotPositionRandom "0/1") paranccsal megadható,
+		//hogy a kis robotok kezdőpozíciója random generálódjon, vagy manuálisan mi adjuk meg
 		if (commandArray[0].equals("setLittleRobotPositionRandom")
 				&& commandArray.length > 1) {
 			try {
+				//ha a parancs (setLittleRobotPositionRandom 0), akkor manuálisan mi adjuk meg
 				if (Integer.parseInt(commandArray[1]) == 0) {
 					TestApp.littleRandom = false;
+				//ha a parancs(setLittleRobotPositionRandom 1), akkor random generálódik
 				} else if (Integer.parseInt(commandArray[1]) == 1) {
 					TestApp.littleRandom = true;
+				} else{
+					System.err.println("0 vagy 1 paramétert adj meg a parancshoz!");
 				}
 			} catch (NumberFormatException ex) {
+				System.err.println("Hibás paraméterek az adott parancshoz!");
 			}
 		}
 
@@ -358,9 +362,9 @@ public class GameEngine {
 
 	public boolean play(String command) {
 		/*
-		 * tenyleges jatek mechanika minden lepes vegen meg kell hivni minden
-		 * jatekos DisplayHandleret, és kirajzolni a pályát minden lepeskor az
-		 * aktualis jatekos StepHandleret, és bekérni a lépést frissiteni kell a
+		 * tényleges játek mechanika minden lépés végén meg kell hivni minden
+		 * játékos DisplayHandleret, és kirajzolni a pályát minden lépéskor az
+		 * aktuális játékos StepHandleret, és bekérni a lépést, frissiteni kell a
 		 * jatekosok pontjait
 		 */
 
@@ -370,11 +374,11 @@ public class GameEngine {
 		 */
 
 		String[] commandArray = { "" };
-
+		//a parancs tördelése a szóközök mentén
 		if (command != null) {
 			commandArray = command.split(" ");
 		}
-
+		//lépés parancs megadása, vagy normál mód esetén, ha lépés történt
 		if (command == null || commandArray[0].equals("step")) {
 			for (Player player : players) {
 
@@ -382,7 +386,7 @@ public class GameEngine {
 					try {
 						int index;
 						if ((index = Integer.parseInt(commandArray[3])) < players
-								.size()) {
+								.size() && index >= 0)  {
 							player = players.get(index);
 							if (player == null) {
 								return false;
@@ -391,6 +395,7 @@ public class GameEngine {
 							return false;
 						}
 					} catch (NumberFormatException ex) {
+						System.err.println("Hibás paraméterek az adott parancshoz!");
 						return false;
 					}
 				}
