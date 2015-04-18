@@ -18,6 +18,7 @@ import hu.bme.bitsplease.levelHandler.Field;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -520,6 +521,32 @@ public class GameEngine {
 								* Math.sin(player.velocity.angle * Math.PI
 										/ 180));
 
+				Player weakPlayer = null;
+				
+				Iterator<Entry<Robot, Position>> it = level.playerPositions.entrySet().iterator();
+			    while (it.hasNext()) {
+			    	Map.Entry<Robot, Position> i = (Entry<Robot, Position>)it.next();
+					if(i.getValue().x == actualX && i.getValue().y == actualY && !i.getKey().equals(player)){
+						level.fields[i.getValue().x][i.getValue().y].fieldType = Field.Type.OIL;
+						level.fields[i.getValue().x][i.getValue().y].remainingRounds = 3;
+						if(i.getKey().getClass().toString().equals("LittleRobot")){
+							it.remove();
+						}else if(i.getKey().getClass().toString().equals("Player")){
+							if(i.getKey().velocity.size > player.velocity.size){
+								deletePlayer(player);
+								player = null;
+							}else{
+								weakPlayer = (Player)i.getKey();
+							}
+						}
+						break;
+					}
+				}
+			    
+			    if(weakPlayer != null){
+			    	deletePlayer(weakPlayer);
+			    }
+				
 				/*
 				 * Ha kiesik, akkor nullra állítjuk a listában és belerakjuk a
 				 * kiesettek listájába
