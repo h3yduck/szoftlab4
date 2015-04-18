@@ -586,33 +586,7 @@ public class GameEngine {
 				 * Ha kiesik, akkor nullra állítjuk a listában és belerakjuk a
 				 * kiesettek listájába
 				 */
-<<<<<<< HEAD
 
-				if ((actualX < 0)
-						|| (actualX >= level.fields[0].length)
-						|| (actualY < 0)
-						|| (actualY >= level.fields.length)
-						|| (level.fields[actualY][actualX].fieldType == Field.Type.HOLE)) {
-					deletePlayer(player);
-					player = null;
-				} else {
-					// Hozzáadjuk az új pontszámot az eddigihez
-					int newScore = Math.abs(actualX
-							- level.playerPositions.get(player).x)
-							+ Math.abs(actualY
-									- level.playerPositions.get(player).y);
-					playerScores.put(player, newScore);
-
-					player.addScore(newScore);
-
-					/*
-					 * Áthelyezzük a robotot az új helyére, majd kirajzoljuk a
-					 * pályát
-					 */
-
-					level.playerPositions.put(player,new Position(actualX, actualY));
-				}
-=======
 			    if(player != null){
 					if ((actualX < 0)
 							|| (actualX >= level.fields[0].length)
@@ -641,7 +615,7 @@ public class GameEngine {
 						new Position(actualX, actualY));
 					}
 			    }
->>>>>>> f2f709f70a54e9fcb1f3a669b6eaf955842af081
+
 
 				/*
 				 * Ha a robot ragacsra lépett, akkor csökkentjük a ragacs
