@@ -95,6 +95,7 @@ public class GameEngine {
 		
 		Player maxScorePlayer = null;
 		int maxScore = -1;
+		//legtöbb pontot szerző, (még játékban levő) játékos meghatározása
 		for(Player player : players){
 			if(player != null && playerScores.get(player) > maxScore){
 				maxScorePlayer = player;
@@ -184,7 +185,6 @@ public class GameEngine {
 			}
 		}
 		
-		System.out.println("asd");
 		
 		if(command == null || commandArray[0].equals("setSpecialActionNumber")){
 			// specialis elemek számának beallitasa minden jatekos reszere oil és
