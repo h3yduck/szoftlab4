@@ -57,17 +57,13 @@ public class ConsoleInput implements InputHandler {
 				// Kivesszük a megadott string-ből a whitespace karaktereket.
 				line.replaceAll("\\s+", "");
 
-				switch (line) {
-				// Ha 'O' vagy 'S', akkor beállítjuk a karakterből a foltot.
-				case "O":
-				case "S":
+				if(line.equals("O") || line.equals("S")){
+					// Ha 'O' vagy 'S', akkor beállítjuk a karakterből a foltot.
 					newStep.stepAction = Step.ActionType.fromChar(line
 							.charAt(0));
-					break;
-
+				}else{
 				// Egyébként, ha nem üres a string, akkor nem megfelelő a
 				// bemenet, ezért újrakérjük.
-				default:
 					if (line.length() > 0) {
 						throw new IOException(
 								"A megadott bemenet nem megfelelő!");
