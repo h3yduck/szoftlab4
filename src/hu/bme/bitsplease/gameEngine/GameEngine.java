@@ -180,6 +180,8 @@ public class GameEngine {
 			}
 		}
 		
+		System.out.println("asd");
+		
 		if(command == null || commandArray[0].equals("setSpecialActionNumber")){
 			// specialis elemek számának beallitasa minden jatekos reszere oil és
 			// stickre is
