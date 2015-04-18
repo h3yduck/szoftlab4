@@ -56,9 +56,11 @@ public class GameEngine {
 	// ha egy játékos kiesett,akkor ez a függvény végzi el a játékos törlését a
 	// pályáról, stb.
 	private void deletePlayer(Player player) {
-		outPlayers.add(player);
-		players.set(players.indexOf(player), null);
-		level.playerPositions.remove(player);
+		if(player != null){
+			outPlayers.add(player);
+			players.set(players.indexOf(player), null);
+			level.playerPositions.remove(player);
+		}
 	}
 
 	// GameEngine paraméteres konstruktora, ahol a paraméter a pályabetöltő
@@ -88,16 +90,14 @@ public class GameEngine {
 	}
 
 	public void startGame() {
-		while (getSettings(null))
-			;
+		while (getSettings(null));
 
 		/*
 		 * A játék addig fut, amíg a play függvény igazat ad vissza null ->
 		 * parancsok nélkül futtatás
 		 */
 
-		while (play(null))
-			;
+		while (play(null));
 
 		Player maxScorePlayer = null;
 		int maxScore = -1;
@@ -135,7 +135,7 @@ public class GameEngine {
 
 		String levelName = null;
 
-		// Ha a beállítások sikertelen voltak, akkor a tömböket kiűríti
+		// Normál módban ha a beállítások sikertelenek voltak, akkor a tömböket kiűríti
 		if (command == null) {
 			players.clear();
 			outPlayers.clear();
@@ -145,8 +145,7 @@ public class GameEngine {
 
 		/*
 		 * Minden parancshoz tartozik egy normál működés esetén lezajló esemény.
-		 * Parancs-mód esetén: command != null Normál mód esetén: command ==
-		 * null
+		 * Parancs-mód esetén: command != null Normál mód esetén: command == null
 		 */
 
 		// Pálya betöltése Normál mód esetén
@@ -165,6 +164,32 @@ public class GameEngine {
 			levelLoader = new FileLoader(levelName);
 			level = levelLoader.getLevel();
 		}
+		
+		// Ha nem sikerült beállítani, akkor beállítunk egy alapértelmezett pályát
+		// a teszteléshez
+		if (command != null && level == null) {
+			level = new Level();
+			level.fields = new Field[100][100];
+						
+			for(int i = 0; i < 100; i++){
+				for(int j = 0; j < 100; j++){
+					level.fields[i][j] = new Field(Field.Type.FREE, 0);
+				}
+			}
+						
+			level.fields[20][45].fieldType = Field.Type.USRPOS;
+			level.fields[32][15].fieldType = Field.Type.USRPOS;
+			level.fields[45][75].fieldType = Field.Type.USRPOS;
+			level.fields[80][20].fieldType = Field.Type.USRPOS;
+			level.fields[62][10].fieldType = Field.Type.USRPOS;
+			level.fields[49][35].fieldType = Field.Type.USRPOS;
+			level.fields[95][2].fieldType = Field.Type.USRPOS;
+			level.fields[2][80].fieldType = Field.Type.USRPOS;
+			level.fields[58][50].fieldType = Field.Type.USRPOS;
+			level.fields[45][20].fieldType = Field.Type.USRPOS;
+						
+			level.playerPositions = new HashMap<Robot, Position>();
+		}
 
 		int specialTypeNum = 0;
 		int numOfPlayers = 0;
@@ -179,29 +204,45 @@ public class GameEngine {
 		if (commandArray[0].equals("setPlayers") && commandArray.length > 1) {
 			try {
 				numOfPlayers = Integer.parseInt(commandArray[1]);
+				if(numOfPlayers > 10){
+					throw new NumberFormatException();
+				}
 			} catch (NumberFormatException ex) {
 				numOfPlayers = 0;
-				System.err.println("0-nál nagyobb egész számot adj meg paraméterként!");
+				System.err.println("0-nál nagyobb, 10-nél kisebb egész számot adj meg paraméterként!");
 			}
 		}
 
-		// speciális elemek számának beállíta a (setSpecialActionNumber "szám")
-		// paranccsal
-		if (commandArray[0].equals("setSpecialActionNumber")
-				&& commandArray.length > 1) {
+		// speciális elemek számának beállíta a (setSpecialActionNumber "szám") paranccsal
+		if (commandArray[0].equals("setSpecialActionNumber") && commandArray.length > 2) {
 			try {
 				specialTypeNum = Integer.parseInt(commandArray[1]);
+				int index = Integer.parseInt(commandArray[2]);
+				if(players != null && index >= 0 && index < players.size()){
+					players.get(index).actionNums.put(ActionType.OIL, specialTypeNum);
+					players.get(index).actionNums.put(ActionType.STICK, specialTypeNum);
+				}else{
+					throw new NumberFormatException();
+				}
 			} catch (NumberFormatException ex) {
 				specialTypeNum = 0;
-				System.err.println("0-nál nagyobb egész számot adj meg paraméterként!");
+				System.err.println("A megadott player index vagy foltszám nem megfelelő"
+						+ "0-nál nagyobb egész számot adj meg a foltok számának!");
 			}
 		}
 
-		// játékosok nevének megadása,ha nem adjuk meg, default: TestName
+		// játékosok nevének megadása,ha nem adjuk meg, default: Player<i>, ahol i az index
 		if (command == null || commandArray[0].equals("setPlayers")) {
+			// Játékos adatok kitörlése új beállítása esetén
+			players.clear();
+			outPlayers.clear();
+			
+			if(level != null)
+				level.playerPositions.clear();
+			
 			for (int i = 0; i < numOfPlayers; i++) {
 				// jatekos nevenek lekerdezese
-				String name = "TestName";
+				String name = "Player" + (i + 1);
 				if (command == null) {
 					name = input.getRobotName();
 				}
@@ -211,10 +252,29 @@ public class GameEngine {
 				playerScores.put(player, 0);
 			}
 		}
+		
+		if(commandArray[0].equals("setPlayerName") && commandArray.length > 2){
+			/*
+			 *  Beállítja a megadott játékos nevét
+			 *  setPlayerName <név> <player index>
+			 */
+			
+			try{
+				int index = Integer.parseInt(commandArray[2]);
+				// Ha az index megfelelő és nem null a players lista, beállítjuk a nevet
+				if(players != null && index >= 0 && index < players.size()){
+					players.get(index).name = commandArray[1];
+				}else{
+					throw new NumberFormatException();
+				}
+			}catch(NumberFormatException ex){
+				System.err.println("Nem megfelelő a megadott index");
+				return false;
+			}
+		}
 
-		// specialis elemek számának beallitasa minden jatekos reszere oil és
-		// stickre is
-		if (command == null || commandArray[0].equals("setSpecialActionNumber")) {
+		// specialis elemek számának beallitasa minden jatekos reszere oil és stickre is
+		if (command == null) {
 			for (Player player : players) {
 				if (player != null) {
 					player.actionNums.put(ActionType.OIL, specialTypeNum);
@@ -234,8 +294,12 @@ public class GameEngine {
 		if (commandArray[0].equals("setRounds") && commandArray.length > 1) {
 			try {
 				remainingRounds = Integer.parseInt(commandArray[1]);
+				if(remainingRounds < 0){
+					throw new NumberFormatException();
+				}
 				originalRounds = remainingRounds;
 			} catch (NumberFormatException ex) {
+				// Ha nem megfelelő bemenet, akkor 
 				remainingRounds = 0;
 				originalRounds = remainingRounds;
 				System.err.println("0-nál nagyobb egész számot adj meg paraméterként!");
@@ -247,27 +311,6 @@ public class GameEngine {
 		//kezdőpozíciójának meghatározása
 		if (command == null || commandArray[0].equals("setMap")) {
 			
-			if (level == null) {
-				level = new Level();
-				level.fields = new Field[100][100];
-				
-				for(int i = 0; i < 100; i++){
-					for(int j = 0; j < 100; j++){
-						level.fields[i][j] = new Field(Field.Type.FREE, 0);
-					}
-				}
-				
-				level.fields[20][45].fieldType = Field.Type.USRPOS;
-				level.fields[32][15].fieldType = Field.Type.USRPOS;
-				level.fields[45][75].fieldType = Field.Type.USRPOS;
-				level.fields[80][20].fieldType = Field.Type.USRPOS;
-				level.fields[62][10].fieldType = Field.Type.USRPOS;
-				level.fields[49][35].fieldType = Field.Type.USRPOS;
-				level.fields[95][2].fieldType = Field.Type.USRPOS;
-				level.fields[2][80].fieldType = Field.Type.USRPOS;
-				level.fields[58][50].fieldType = Field.Type.USRPOS;
-				level.fields[45][20].fieldType = Field.Type.USRPOS;
-			}
 			// USPROS mező = lehetséges kezdőpozíciók
 			//positions lista feltöltése a lehetséges kezdőpozíciókkal
 			for (int i = 0; i < level.fields.length; i++) {
@@ -282,15 +325,19 @@ public class GameEngine {
 			
 			//Ha több játékos van megadva, mint ahány mezője van a pályának,
 			//akkor az eddigi beállítások érvénytelenek, újra kell futnia a getSettingsnek()
-			if (positions.size() < players.size()) {
-				display.displayError("Túl sok játékost adtál meg a kiválasztott pályához. "
-						+ "Adj meg másik pályát vagy kevesebb játékost.");
-				Player.resetSNum();
-				return true;
-			}
-			// A positions listában találhatő megfelelő kezdőpozíciók alapján
-			// véletlenszerűen elhelyezzük a játékosokat
-			if (command == null || TestApp.playerRandom) {
+			if(command == null || TestApp.playerRandom){
+				// Csak akkor, ha normál módú futás, vagy ha véletlenszerű a játékosok kiosztása
+				
+				if (positions.size() < players.size()) {
+					display.displayError("Túl sok játékost adtál meg a kiválasztott pályához. "
+							+ "Adj meg másik pályát vagy kevesebb játékost.");
+					Player.resetSNum();
+					return true;
+				}
+			
+				// A positions listában találhatő megfelelő kezdőpozíciók alapján
+				// véletlenszerűen elhelyezzük a játékosokat
+		
 				for (Player player : players) {
 					Random random = new Random();
 					int rand = random.nextInt(positions.size());
@@ -327,24 +374,22 @@ public class GameEngine {
 			}
 		}
 		
-		//ha a parancs (setPlayersPositionRandom "szám1" "szám2" "szám3") formájú,
+		//ha a parancs (setPlayerPosition "szám1" "szám2" "szám3") formájú,
 		//akkor a (szám1, szám2) pozícióra beállítja a szám3 sorszámú játékost.
-		if (commandArray[0].equals("setPlayersPositionRandom")
-				&& commandArray.length > 3 && !TestApp.playerRandom) {
+		if (commandArray[0].equals("setPlayerPosition") && commandArray.length > 3 && !TestApp.playerRandom) {
 			try {
 				//pozíció meghatározása szám1,szám2 paraméterek alapján
 				Position pos = new Position(Integer.parseInt(commandArray[1]),
 						Integer.parseInt(commandArray[2]));
 				int index;
 				//játékos sorszámának meghatározása szám3 paraméter alapján
-				if ((index = Integer.parseInt(commandArray[3])) < players
-						.size() && index >= 0 && level != null) {
+				if ((index = Integer.parseInt(commandArray[3])) < players.size() && index >= 0 && level != null) {
 					//megvizsgálja, hogy a megadott pozíció rajta van e a pályán
 					if(Integer.parseInt(commandArray[1]) < level.fields[0].length &&
 							Integer.parseInt(commandArray[1]) >= 0 &&
 							Integer.parseInt(commandArray[2]) < level.fields.length &&
 							Integer.parseInt(commandArray[2]) >= 0)
-					level.playerPositions.put(players.get(index), pos);
+						level.playerPositions.put(players.get(index), pos);
 					else
 						System.err.println("Hibás pozíció! A megadott pozíció nem a pályán található");
 				}else
@@ -357,8 +402,7 @@ public class GameEngine {
 		
 		//Parancs-mód esetén a (setLittleRobotPositionRandom "0/1") paranccsal megadható,
 		//hogy a kis robotok kezdőpozíciója random generálódjon, vagy manuálisan mi adjuk meg
-		if (commandArray[0].equals("setLittleRobotPositionRandom")
-				&& commandArray.length > 1) {
+		if (commandArray[0].equals("setLittleRobotPositionRandom") && commandArray.length > 1) {
 			try {
 				//ha a parancs (setLittleRobotPositionRandom 0), akkor manuálisan mi adjuk meg
 				if (Integer.parseInt(commandArray[1]) == 0) {
@@ -455,9 +499,11 @@ public class GameEngine {
 									actualStep.stepAction = Step.ActionType.fromChar(commandArray[2].charAt(0));
 								}else if(!commandArray[2].equals("F")){
 									System.err.println("Hibás paraméterek az adott parancshoz!");
+									return false;
 								}
 							} catch (NumberFormatException ex) {
 								System.err.println("Hibás paraméterek az adott parancshoz!");
+								return false;
 							}
 						}
 
@@ -638,8 +684,7 @@ public class GameEngine {
 				 * pályáról, ezért nem léphetett ragacsra
 				 */
 
-				if (player != null
-						&& level.fields[actualY][actualX].fieldType == Field.Type.STICK) {
+				if (player != null && level.fields[actualY][actualX].fieldType == Field.Type.STICK) {
 					level.fields[actualY][actualX].remainingRounds--;
 				}
 
@@ -660,14 +705,10 @@ public class GameEngine {
 				if (little == null) {
 					continue;
 				}
-				//Ha a kisrobot nem takarít, akkor nem történik semmi
+				
+				//Ha a kisrobot nem takarít, akkor megy a legközelebbi foltos mezőhöz
 				//Ha a kisrobotnak most járt le a törlési ideje, akkor a mező üres lesz
 				if (!little.isCleaning()) {
-
-				} 
-				else if (little.getRemainingCleaningTime() == 0) {
-					level.fields[actual.y][actual.x].fieldType = Field.Type.FREE;
-				} else {
 					LinkedList<Position> positions = new LinkedList<Position>();
 					positions.addLast(actual);
 					//megkeresi a kisrobothoz legközelebb levő takarítandó mezőt
@@ -681,6 +722,9 @@ public class GameEngine {
 								- specialPosition.x)
 								* 180 / Math.PI;
 					}
+				} 
+				else if (little.getRemainingCleaningTime() == 0) {
+					level.fields[actual.y][actual.x].fieldType = Field.Type.FREE;
 				}
 				
 				//új pozíció kiszámítása
@@ -849,8 +893,7 @@ public class GameEngine {
 		//szám1=sebesség nagysága
 		//szám2=sebesség szöge
 		//szám3=a robot sorszáma
-		if (commandArray[0].equals("setPlayerVelocity")
-				&& commandArray.length > 3) {
+		if (commandArray[0].equals("setPlayerVelocity") && commandArray.length > 3) {
 			try {
 				if(Integer.parseInt(commandArray[3]) < players.size() &&
 						Integer.parseInt(commandArray[3]) >= 0 ){
@@ -870,7 +913,7 @@ public class GameEngine {
 				if (player == null) {
 					continue;
 				}
-				System.out.print(player.name + " "
+				System.out.println(player.name + " "
 						+ level.playerPositions.get(player).x + " "
 						+ level.playerPositions.get(player).y + " "
 						+ player.actionNums.get(Step.ActionType.OIL) + " "
@@ -882,7 +925,7 @@ public class GameEngine {
 				if (player == null) {
 					continue;
 				}
-				System.out.print(player.name + " "
+				System.out.println(player.name + " "
 						+ level.playerPositions.get(player).x + " "
 						+ level.playerPositions.get(player).y + " "
 						+ player.actionNums.get(Step.ActionType.OIL) + " "
@@ -897,7 +940,7 @@ public class GameEngine {
 				if (little == null) {
 					continue;
 				}
-				System.out.print(level.playerPositions.get(little).x + " "
+				System.out.println(level.playerPositions.get(little).x + " "
 						+ level.playerPositions.get(little).y + " "
 						+ little.velocity.size + " " + little.velocity.angle
 						+ " nem");
@@ -922,22 +965,33 @@ public class GameEngine {
 
 	}
 	
-	private Position getNearestGoodField(LinkedList<Position> positions,
-			boolean special) {
+	private Position getNearestGoodField(LinkedList<Position> positions, boolean special) {
+		/*
+		 *  Ha special == true ,megkeresi a legközelebbi foltos mezőt
+		 *  Egyébként megkeresi a legközelebbi olyan mezőt, ahol nincs Robot
+		 *  Ha nem talál megfelelő mezőt, akkor null a visszatérési érték
+		 *  Szélességi bejárás
+		 */
+		
+		
 		Position actualPos;
 		if ((actualPos = positions.pollFirst()) == null) {
+			// Ha nincs már több mező a sorban, akkor nem talált megfelelő mezőt
 			return null;
 		} else {
+			// Ha van még mező a sorban, akkor megnézi a szomszédait
 			for (int i = actualPos.y - 1; i <= actualPos.y + 1; i++) {
 				for (int j = actualPos.x - 1; j <= actualPos.x + 1; j++) {
 					if (special) {
-						if (level.fields[j][i].fieldType == Field.Type.OIL
-								|| level.fields[j][i].fieldType == Field.Type.STICK) {
+						// Megnézi foltos e a mező, ha igen akkor ez a legközelebbi
+						// Ha nem, akkor hozzáadja a sorhoz
+						if (level.fields[j][i].fieldType == Field.Type.OIL || level.fields[j][i].fieldType == Field.Type.STICK) {
 							return new Position(j, i);
 						} else {
 							positions.addLast(new Position(j, i));
 						}
 					} else {
+						// Megnézi, hogy van e rajta Robot
 						boolean goodPosition = true;
 						for (Entry<Robot, Position> entry : level.playerPositions
 								.entrySet()) {
@@ -947,6 +1001,7 @@ public class GameEngine {
 							}
 						}
 						if (goodPosition) {
+							// Ha nincs, akkor ide lép, ha van, akkor belekerül a sorba
 							return new Position(j, i);
 						} else {
 							positions.addLast(new Position(j, i));
