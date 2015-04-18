@@ -36,26 +36,30 @@ public class GameEngine {
 	// A játékban hátramaradt körök száma
 	private int remainingRounds;
 	
+	//Eredeti körök száma
 	private int originalRounds;
 
-	private List<Player> outPlayers; // Kisesett játékosok
+	private List<Player> outPlayers; // Kiesett játékosok
 	private List<Player> players; // A játékosok listája
 	
 	private InputHandler input;
 	private DisplayHandler display;
 	
+	//Kis tisztító robotok
 	private List<LittleRobot> littleRobots;
 	
 	// ha egy játékos kiesett, akkor belekerül az outPlayers listába, és az
 	// értéke null lesz a players listában
 	private Map<Player, Integer> playerScores; // A játékosok pontjai
 
+	//ha egy játékos kiesett,akkor ez a függvény végzi el a játékos törlését a pályáról, stb.
 	private void deletePlayer(Player player) {
 		outPlayers.add(player);
 		players.set(players.indexOf(player), null);
 		level.playerPositions.remove(player);
 	}
 
+	//GameEngine paraméteres konstruktora, ahol a paraméter a pályabetöltő objektum
 	public GameEngine(LevelLoader levelLoader) {
 		this.levelLoader = levelLoader;
 		players = new ArrayList<Player>();
@@ -67,7 +71,7 @@ public class GameEngine {
 		remainingRounds = 10;
 		originalRounds = remainingRounds;
 	}
-
+	//GameEngine paraméter nélküli konstruktora
 	public GameEngine() {
 		players = new ArrayList<Player>();
 		outPlayers = new ArrayList<Player>();
