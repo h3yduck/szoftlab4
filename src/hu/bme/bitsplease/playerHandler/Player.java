@@ -37,7 +37,7 @@ public class Player extends Robot{
     
     public Step getStep() {
     	//Bekérjük névvel a lépést
-        Step actualStep = stepHandler.getStep(name);
+        Step actualStep = stepHandler.getStep(number + ". " + name);
     	return actualStep;
     }
     

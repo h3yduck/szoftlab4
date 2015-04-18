@@ -72,7 +72,7 @@ public class ConsoleDisplay implements DisplayHandler {
 
 	@Override
 	public void displayError(String error) {
-		System.out.println(error);
-		System.out.println();
+		System.err.println(error);
+		System.err.println();
 	}
 }

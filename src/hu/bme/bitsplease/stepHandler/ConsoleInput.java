@@ -76,12 +76,12 @@ public class ConsoleInput implements InputHandler {
 
 			} catch (NumberFormatException ex) {
 				// Ha a parse nem sikerül, akkor újrakerjük az adatot.
-				System.out.println("A megadott bemenet nem megfelelő!");
-				System.out.println();
+				System.err.println("A megadott bemenet nem megfelelő!");
+				System.err.println();
 				goodInput = false;
 			} catch (IOException ex) {
-				System.out.println("A megadott bemenet nem megfelelő!");
-				System.out.println();
+				System.err.println("A megadott bemenet nem megfelelő!");
+				System.err.println();
 				goodInput = false;
 			}
 		}
@@ -106,8 +106,8 @@ public class ConsoleInput implements InputHandler {
 				}
 			} catch (IOException ex) {
 				// Ha nem létezik fájl, akkor újrakérjük.
-				System.out.println(ex.getMessage());
-				System.out.println();
+				System.err.println(ex.getMessage());
+				System.err.println();
 				goodInput = false;
 			}
 		}
@@ -137,13 +137,13 @@ public class ConsoleInput implements InputHandler {
 				}
 			} catch (NumberFormatException ex) {
 				// Ha nem megfelelő a bemenet, akkor újrakérjük
-				System.out.println("A megadott bemenet nem megfelelő");
-				System.out.println();
+				System.err.println("A megadott bemenet nem megfelelő");
+				System.err.println();
 				goodInput = false;
 			} catch (IOException ex) {
 				// Ha nem megfelelő a bemenet, akkor újrakérjük
-				System.out.println("A megadott bemenet nem megfelelő");
-				System.out.println();
+				System.err.println("A megadott bemenet nem megfelelő");
+				System.err.println();
 				goodInput = false;
 			}
 		}
@@ -173,13 +173,13 @@ public class ConsoleInput implements InputHandler {
 				}
 			} catch (NumberFormatException ex) {
 				// Ha nem megfelelő a bemenet, akkor újrakérjük
-				System.out.println("A megadott bemenet nem megfelelő");
-				System.out.println();
+				System.err.println("A megadott bemenet nem megfelelő");
+				System.err.println();
 				goodInput = false;
 			} catch (IOException ex) {
 				// Ha nem megfelelő a bemenet, akkor újrakérjük
-				System.out.println("A megadott bemenet nem megfelelő");
-				System.out.println();
+				System.err.println("A megadott bemenet nem megfelelő");
+				System.err.println();
 				goodInput = false;
 			}
 		}
@@ -205,8 +205,8 @@ public class ConsoleInput implements InputHandler {
 				}
 			} catch (IOException ex) {
 				// Ha nem megfelelő a bemenet, akkor újrakérjük
-				System.out.println("A megadott bemenet nem megfelelő");
-				System.out.println();
+				System.err.println("A megadott bemenet nem megfelelő");
+				System.err.println();
 				goodInput = false;
 			}
 		}
@@ -237,13 +237,13 @@ public class ConsoleInput implements InputHandler {
 				}
 			} catch (NumberFormatException ex) {
 				// Ha nem megfelelő a bemenet, akkor újrakérjük
-				System.out.println("A megadott bemenet nem megfelelő");
-				System.out.println();
+				System.err.println("A megadott bemenet nem megfelelő");
+				System.err.println();
 				goodInput = false;
 			} catch (IOException ex) {
 				// Ha nem megfelelő a bemenet, akkor újrakérjük
-				System.out.println("A megadott bemenet nem megfelelő");
-				System.out.println();
+				System.err.println("A megadott bemenet nem megfelelő");
+				System.err.println();
 				goodInput = false;
 			}
 		}
