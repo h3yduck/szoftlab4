@@ -12,29 +12,6 @@ import java.util.HashMap;
  */
 public class FileLoader implements LevelLoader {
 	private String pathToLevelFile;
-
-	public FileLoader(){
-		Level level = new Level();
-		level.fields = new Field[100][100];
-		
-		for(int i = 0; i < 100; i++){
-			for(int j = 0; j < 100; j++){
-				level.fields[i][j] = new Field(Field.Type.FREE, 0);
-			}
-		}
-		
-		level.fields[20][45].fieldType = Field.Type.USRPOS;
-		level.fields[32][15].fieldType = Field.Type.USRPOS;
-		level.fields[45][75].fieldType = Field.Type.USRPOS;
-		level.fields[80][20].fieldType = Field.Type.USRPOS;
-		level.fields[62][10].fieldType = Field.Type.USRPOS;
-		level.fields[49][35].fieldType = Field.Type.USRPOS;
-		level.fields[95][2].fieldType = Field.Type.USRPOS;
-		level.fields[2][80].fieldType = Field.Type.USRPOS;
-		level.fields[58][50].fieldType = Field.Type.USRPOS;
-		level.fields[45][20].fieldType = Field.Type.USRPOS;
-		
-	}
 	
 	public FileLoader(String pathToLevelFile) {
 		this.pathToLevelFile = pathToLevelFile;
@@ -51,12 +28,15 @@ public class FileLoader implements LevelLoader {
 		Level level = null;
 		try {
 			// BufferedReader a megfelelő file-hoz
+			if(pathToLevelFile == null){
+				throw new IOException("Nem megfelelő a megadott elérési út!");
+			}
 			br = new BufferedReader(new FileReader(pathToLevelFile));
 			String line;
 
 			if ((line = br.readLine()) == null) {
 				br.close();
-				throw new IOException("Invalid file format, maybe empty file");
+				throw new IOException("em megfelelő a fájl formátuma");
 			}
 
 			// Az első sor a pályát jelképező mátrix mérete, azaz két int

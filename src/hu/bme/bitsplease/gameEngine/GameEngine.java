@@ -248,8 +248,25 @@ public class GameEngine {
 		if (command == null || commandArray[0].equals("setMap")) {
 			
 			if (level == null) {
-				levelLoader = new FileLoader();
-				level = levelLoader.getLevel();
+				level = new Level();
+				level.fields = new Field[100][100];
+				
+				for(int i = 0; i < 100; i++){
+					for(int j = 0; j < 100; j++){
+						level.fields[i][j] = new Field(Field.Type.FREE, 0);
+					}
+				}
+				
+				level.fields[20][45].fieldType = Field.Type.USRPOS;
+				level.fields[32][15].fieldType = Field.Type.USRPOS;
+				level.fields[45][75].fieldType = Field.Type.USRPOS;
+				level.fields[80][20].fieldType = Field.Type.USRPOS;
+				level.fields[62][10].fieldType = Field.Type.USRPOS;
+				level.fields[49][35].fieldType = Field.Type.USRPOS;
+				level.fields[95][2].fieldType = Field.Type.USRPOS;
+				level.fields[2][80].fieldType = Field.Type.USRPOS;
+				level.fields[58][50].fieldType = Field.Type.USRPOS;
+				level.fields[45][20].fieldType = Field.Type.USRPOS;
 			}
 			// USPROS mező = lehetséges kezdőpozíciók
 			//positions lista feltöltése a lehetséges kezdőpozíciókkal
@@ -530,6 +547,7 @@ public class GameEngine {
 					if(i.getValue().x == actualX && i.getValue().y == actualY && !i.getKey().equals(player)){
 						level.fields[i.getValue().x][i.getValue().y].fieldType = Field.Type.OIL;
 						level.fields[i.getValue().x][i.getValue().y].remainingRounds = 3;
+
 						if(i.getKey().getClass().toString().equals("LittleRobot")){
 							it.remove();
 						}else if(i.getKey().getClass().toString().equals("Player")){
@@ -707,15 +725,12 @@ public class GameEngine {
 
 		}
 
-		if (command == null || commandArray[0].equals("step")
-				|| commandArray[0].equals("setLittleRobotPosition"))
-			if (TestApp.littleRandom) {
-				if (originalRounds - remainingRounds % 10 == 0
-						|| commandArray[0].equals("setLittleRobotPosition")) {
+		if (command == null || commandArray[0].equals("step") || commandArray[0].equals("setLittleRobotPosition")){
+				if ((originalRounds - remainingRounds) % 10 == 0 || commandArray[0].equals("setLittleRobotPosition")) {
 					LittleRobot little = new LittleRobot();
 					int newX = 0;
 					int newY = 0;
-					if (command == null || commandArray[0].equals("step")) {
+					if (command == null || (commandArray[0].equals("step") && TestApp.littleRandom)) {
 						Random random = new Random();
 						newX = random.nextInt(level.fields[0].length);
 						newY = random.nextInt(level.fields.length);
