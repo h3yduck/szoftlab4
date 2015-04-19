@@ -1,0 +1,15 @@
+setPlayers 3
+setPlayerName Bence 0
+setPlayerVelocity 45 3 0
+setSpecialActionNumber 5 0
+setPlayersPositionRandom 0
+setPlayerPosition 12 25 0
+setPlayerName Roli 1
+setPlayerVelocity 80 30 1
+setSpecialActionNumber 4 1
+setPlayerPosition 72 55 1
+setPlayerName Szabi 2
+setPlayerVelocity 65 34 2
+setSpecialActionNumber 0 2
+setPlayerPosition 14 45 2
+listPlayers

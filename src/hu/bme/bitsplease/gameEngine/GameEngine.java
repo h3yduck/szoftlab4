@@ -910,7 +910,7 @@ public class GameEngine {
 		//listPlayers parancs megadása esetén a játékosok kilistázása
 		if (commandArray[0].equals("listPlayers")) {
 			for (Player player : players) {
-				if (player == null) {
+				if (player == null) {	
 					continue;
 				}
 				System.out.println(player.name + " "
