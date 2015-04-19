@@ -70,11 +70,11 @@ public class TestApp {
                                     System.out.println("Sikeres tesztelés!");
                                     System.out.flush();
                                 }
+                                brOut.close();
                             } catch (Exception e) {
                                 System.out.println("váratlan hiba tesztelés közben: " + e.getMessage());
                                 System.out.flush();
                             }
-
                         } else {
                             // cannot find out file
                         }
@@ -114,9 +114,9 @@ public class TestApp {
                 } else if (line.split(" ")[0].equals("exit")) {
                     break;
                 }
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 System.out.println(ex.getMessage());
-            }
+            } 
         }
 
         System.out.flush();

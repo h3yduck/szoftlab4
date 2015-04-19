@@ -9,7 +9,7 @@ public class LittleRobot extends Robot {
 	public LittleRobot(){
 		remainingCleaningTime = 0;
 		velocity = new Velocity();
-		velocity.size = 1;
+		velocity.size = 0;
 	}
 	
 	public boolean isCleaning() {

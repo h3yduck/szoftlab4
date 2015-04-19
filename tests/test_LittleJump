@@ -2,7 +2,7 @@ setMap testmap1.txt
 setPlayers 1
 setPlayersPositionRandom 0
 setPlayerPosition 1 0 0
-setLittleRobotPositonRandom 0
+setLittleRobotPositionRandom 0
 setLittleRobotPosition 0 0 0
 listLittleRobots
 listSpecialPositions
