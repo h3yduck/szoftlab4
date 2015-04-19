@@ -1,0 +1,6 @@
+setMap testmap1.txt
+setPlayers 1
+setPlayersPositionRandom 0
+setPlayerPosition 0 0 0
+step 180 F 0
+listPlayers
