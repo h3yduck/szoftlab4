@@ -385,14 +385,15 @@ public class GameEngine {
 				//játékos sorszámának meghatározása szám3 paraméter alapján
 				if ((index = Integer.parseInt(commandArray[3])) < players.size() && index >= 0 && level != null) {
 					//megvizsgálja, hogy a megadott pozíció rajta van e a pályán
-					if(Integer.parseInt(commandArray[1]) < level.fields[0].length &&
-							Integer.parseInt(commandArray[1]) >= 0 &&
-							Integer.parseInt(commandArray[2]) < level.fields.length &&
-							Integer.parseInt(commandArray[2]) >= 0)
+					if(pos.x < level.fields[0].length &&
+							pos.x >= 0 &&
+							pos.y < level.fields.length &&
+							pos.y >= 0)
 						level.playerPositions.put(players.get(index), pos);
-					else
+					else{
 						level.playerPositions.put(players.get(index), new Position(0, 0));
 						System.err.println("Hibás pozíció! A megadott pozíció nem a pályán található");
+					}
 				}else
 					System.err.println("A megadott sorszámú játékos nem létezik!");
 			} catch (NumberFormatException ex) {
@@ -755,13 +756,10 @@ public class GameEngine {
 					Position newPosition = getNearestGoodField(positions, false);
 					if (newPosition != null) {
 						level.playerPositions.put(little, newPosition);
-						littleRobots.add(little);
 					}
 					//ha nincs rajta másik robot, akkor beállítjuk arra a mezőre a kis robotot
 				} else {
-					level.playerPositions.put(little, new Position(actualX,
-							actualY));
-					littleRobots.add(little);
+					level.playerPositions.put(little, new Position(actualX,actualY));
 				}
 				//ha a kis robot olyan mezőre lépett, ahol olaj vagy ragacs van,
 				//akkor megkezdjük a takarítást.
@@ -983,30 +981,34 @@ public class GameEngine {
 		} else {
 			// Ha van még mező a sorban, akkor megnézi a szomszédait
 			for (int i = actualPos.y - 1; i <= actualPos.y + 1; i++) {
-				for (int j = actualPos.x - 1; j <= actualPos.x + 1; j++) {
-					if (special) {
-						// Megnézi foltos e a mező, ha igen akkor ez a legközelebbi
-						// Ha nem, akkor hozzáadja a sorhoz
-						if (level.fields[j][i].fieldType == Field.Type.OIL || level.fields[j][i].fieldType == Field.Type.STICK) {
-							return new Position(j, i);
-						} else {
-							positions.addLast(new Position(j, i));
-						}
-					} else {
-						// Megnézi, hogy van e rajta Robot
-						boolean goodPosition = true;
-						for (Entry<Robot, Position> entry : level.playerPositions
-								.entrySet()) {
-							if (entry.getValue().x == actualPos.x
-									&& entry.getValue().y == actualPos.y) {
-								goodPosition = false;
+				if(i > 0 && i < level.fields.length) {
+					for (int j = actualPos.x - 1; j <= actualPos.x + 1; j++) {
+						if(j > 0 && j < level.fields[0].length) {
+							if (special) {
+								// Megnézi foltos e a mező, ha igen akkor ez a legközelebbi
+								// Ha nem, akkor hozzáadja a sorhoz
+								if (level.fields[j][i].fieldType == Field.Type.OIL || level.fields[j][i].fieldType == Field.Type.STICK) {
+									return new Position(j, i);
+								} else {
+									positions.addLast(new Position(j, i));
+								}
+							} else {
+								// Megnézi, hogy van e rajta Robot
+								boolean goodPosition = true;
+								for (Entry<Robot, Position> entry : level.playerPositions
+										.entrySet()) {
+									if (entry.getValue().x == actualPos.x
+											&& entry.getValue().y == actualPos.y) {
+										goodPosition = false;
+									}
+								}
+								if (goodPosition) {
+									// Ha nincs, akkor ide lép, ha van, akkor belekerül a sorba
+									return new Position(j, i);
+								} else {
+									positions.addLast(new Position(j, i));
+								}
 							}
-						}
-						if (goodPosition) {
-							// Ha nincs, akkor ide lép, ha van, akkor belekerül a sorba
-							return new Position(j, i);
-						} else {
-							positions.addLast(new Position(j, i));
 						}
 					}
 				}
