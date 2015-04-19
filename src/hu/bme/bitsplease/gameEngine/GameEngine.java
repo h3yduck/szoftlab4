@@ -391,6 +391,7 @@ public class GameEngine {
 							Integer.parseInt(commandArray[2]) >= 0)
 						level.playerPositions.put(players.get(index), pos);
 					else
+						level.playerPositions.put(players.get(index), new Position(0, 0));
 						System.err.println("Hibás pozíció! A megadott pozíció nem a pályán található");
 				}else
 					System.err.println("A megadott sorszámú játékos nem létezik!");
