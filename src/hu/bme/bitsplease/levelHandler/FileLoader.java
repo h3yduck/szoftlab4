@@ -75,6 +75,11 @@ public class FileLoader implements LevelLoader {
 				for (Integer y = 0; y < sizeY; y++) {
 					Field.Type type = Field.Type.fromChar(line.charAt(y));
 					level.fields[x][y] = new Field(type, 0);
+					if(type.equals(Field.Type.OIL)){
+						level.fields[x][y].remainingRounds = 3;
+					}else if(type.equals(Field.Type.STICK)){
+						level.fields[x][y].remainingRounds = 4;
+					}
 				}
 			}
 

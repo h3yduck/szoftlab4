@@ -28,7 +28,6 @@ public class ConsoleDisplay implements DisplayHandler {
 									}else{
 										Player p = (Player) robot.getKey();
 										myChar = String.valueOf(p.number);
-										break;
 									}
 								}
 							}
