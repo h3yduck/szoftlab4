@@ -523,7 +523,7 @@ public class GameEngine {
 											.get(player).x].fieldType = Field.Type
 											.fromChar('O');
 									level.fields[level.playerPositions.get(player).y][level.playerPositions.get(player).y]
-											.remainingRounds = 4;
+											.remainingRounds = 3;
 								}
 								else if (actualStep.stepAction == Step.ActionType.STICK){
 									level.fields[level.playerPositions
@@ -531,7 +531,7 @@ public class GameEngine {
 											.get(player).x].fieldType = Field.Type
 											.fromChar('S');
 								level.fields[level.playerPositions.get(player).y][level.playerPositions
-										.get(player).y].remainingRounds = 5;
+										.get(player).y].remainingRounds = 4;
 								}
 								player.actionNums
 										.put(actualStep.stepAction,

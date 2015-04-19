@@ -41,6 +41,7 @@ public class TestApp {
                             //System.out.println("FileOUT " + fOut.getName());
 
                             System.out.println("Fájl tesztelése: " + fIn.getName());
+                            System.out.flush();
                             try {
                                 BufferedReader brIn = new BufferedReader(new FileReader(fIn));
                                 BufferedReader brOut = new BufferedReader(new FileReader(fOut));
@@ -52,42 +53,44 @@ public class TestApp {
                                     String lineOut = brOut.readLine();
                                     if (lineOut == null)
                                         lineOut = "";
-                                    lineOut.trim();
+                                    lineOut = lineOut.trim();
 
                                     if (!lineOut.equals(lineRes)) {
-                                        System.err.println("    hiba itt : " + (j+1) + ". sor");
-                                        System.err.println("  várt érték : " + lineOut);
-                                        System.err.println(" kapott érték: " + lineRes);
-                                        System.err.flush();
+                                        System.out.println("    hiba itt : " + (j+1) + ". sor");
+                                        System.out.println("  várt érték : " + lineOut);
+                                        System.out.println(" kapott érték: " + lineRes);
+                                        System.out.flush();
                                         ok = false;
                                         System.out.println("Sikertelen tesztelés!");
+                                        System.out.flush();
                                         break;
                                     }
                                 }
                                 if (ok) {
                                     System.out.println("Sikeres tesztelés!");
+                                    System.out.flush();
                                 }
                             } catch (Exception e) {
-                                System.err.println("váratlan hiba tesztelés közben: " + e.getMessage());
+                                System.out.println("váratlan hiba tesztelés közben: " + e.getMessage());
+                                System.out.flush();
                             }
-                            System.out.flush();
+
                         } else {
                             // cannot find out file
                         }
+                        System.out.println();
                     }
-
-
                 }
             }
-
-            /*BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            */
         }
 
 
     }
 
     public static List<String> run(BufferedReader br, Boolean redirectOutput) {
+        System.out.flush();
+        System.err.flush();
+
         List<String> result = new ArrayList<String>();
         ByteArrayOutputStream baos = null;
         PrintStream ps = null;
@@ -116,8 +119,9 @@ public class TestApp {
             }
         }
 
+        System.out.flush();
+        System.err.flush();
         if (redirectOutput) {
-            System.out.flush();
             System.setOut(originalPs);
 
             BufferedReader br2 = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())));
