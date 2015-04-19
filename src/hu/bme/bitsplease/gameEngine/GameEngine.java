@@ -631,10 +631,7 @@ public class GameEngine {
 						new Position(actualX, actualY));
 					}
 			    }
-<<<<<<< HEAD
 
-=======
->>>>>>> 654dec3835bf3cb1231f7306a51940d0271de4b3
 
 				/*
 				 * Ha a robot ragacsra lépett, akkor csökkentjük a ragacs
