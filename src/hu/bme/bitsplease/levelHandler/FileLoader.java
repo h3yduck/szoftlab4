@@ -36,7 +36,7 @@ public class FileLoader implements LevelLoader {
 
 			if ((line = br.readLine()) == null) {
 				br.close();
-				throw new IOException("em megfelelő a fájl formátuma");
+				throw new IOException("Nem megfelelő a fájl formátuma");
 			}
 
 			// Az első sor a pályát jelképező mátrix mérete, azaz két int
@@ -44,7 +44,7 @@ public class FileLoader implements LevelLoader {
 			if (parts.length != 2) {
 				br.close();
 				throw new IOException(
-						"Nem megfelelő a fájl formátuma, első sor.");
+						"Nem megfelelő a fájl formátuma, első sor");
 			}
 			Integer sizeX = Integer.parseInt(parts[0]);
 			Integer sizeY = Integer.parseInt(parts[1]);
@@ -85,7 +85,6 @@ public class FileLoader implements LevelLoader {
 
 			// Ha nem megfelelő a megadott fájl, akkor újra bekérjük a fájl
 			// nevét.
-			System.err.println(ex.getMessage());
 			System.err.println("Kérem adjon meg másik fájlt!");
 
 			// null-al térünk vissza ha hiba van
