@@ -612,11 +612,11 @@ public class GameEngine {
 						level.fields[i.getValue().x][i.getValue().y].fieldType = Field.Type.OIL;
 						level.fields[i.getValue().x][i.getValue().y].remainingRounds = 4;
 
-						if(i.getKey().getClass().toString().equals("LittleRobot")){
+						if(i.getKey().getClass().toString().equals("class hu.bme.bitsplease.playerHandler.LittleRobot")){
 							it.remove();
 						//ha a robot egy olyan mezőre lép, ahol egy másik robot található,
 						//akkor kiesik az a robot, amelynek kisebb a sebessége.	
-						}else if(i.getKey().getClass().toString().equals("Player")){
+						}else if(i.getKey().getClass().toString().equals("class hu.bme.bitsplease.playerHandler.Player")){
 							
 							double newX = player.velocity.size
 									* Math.cos(player.velocity.angle * Math.PI
@@ -962,8 +962,8 @@ public class GameEngine {
 					continue;
 				}
 				System.out.println(player.name + " "
-						+ level.playerPositions.get(player).x + " "
-						+ level.playerPositions.get(player).y + " "
+						+ "-1 "
+						+ "-1 "
 						+ player.actionNums.get(Step.ActionType.OIL) + " "
 						+ player.actionNums.get(Step.ActionType.STICK) + " "
 						+ player.velocity.size + " " + player.velocity.angle
