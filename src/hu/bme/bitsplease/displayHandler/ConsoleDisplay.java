@@ -22,7 +22,7 @@ public class ConsoleDisplay implements DisplayHandler {
 							String myChar = String.valueOf(actualLevelState.fields[i][j].fieldType.key);
 							for(Entry<Robot, Position> robot : actualLevelState.playerPositions.entrySet()){
 								if(robot.getValue().x == j && robot.getValue().y == i){
-									if(robot.getClass().toString().equals("LittleRobot")){
+									if(robot.getClass().toString().equals("class hu.bme.bitsplease.playerHandler.LittleRobot")){
 										myChar = "L";
 										break;
 									}else{
