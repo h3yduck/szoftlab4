@@ -3,6 +3,7 @@ package hu.bme.bitsplease.levelHandler;
 import hu.bme.bitsplease.playerHandler.Robot;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,11 +15,11 @@ public class FileLoader implements LevelLoader {
 	private String pathToLevelFile;
 	
 	public FileLoader(String pathToLevelFile) {
-		this.pathToLevelFile = pathToLevelFile;
+		this.pathToLevelFile = "maps" + File.separator + pathToLevelFile;
 	}
 
 	public void setPathToLevelFile(String pathToLevelFile) {
-		this.pathToLevelFile = pathToLevelFile;
+		this.pathToLevelFile = "maps" + File.separator + pathToLevelFile;
 	}
 
 	@Override

@@ -1,2 +1,2 @@
-setMap maps\testmap2.txt
+setMap testmap2.txt
 displayLevel

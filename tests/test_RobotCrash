@@ -1,0 +1,12 @@
+setMap testmap1.txt
+setPlayers 2
+setPlayersPositionRandom 0
+setPlayerName Szabi 0
+setPlayerPosition 0 0 0
+setPlayerVelocity 2 0 0
+setPlayerName Roli 1
+setPlayerPosition 2 0 1
+setPlayerVelocity 1 0 1
+listPlayers
+step -1 F 0
+listPlayers

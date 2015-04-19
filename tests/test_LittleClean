@@ -1,0 +1,11 @@
+setMap testmap2.txt
+setPlayers 1
+setPlayersPositionRandom 0
+setPlayerPosition 0 0 0
+listSpecialPositions
+setLittleRobotPositionRandom 0
+setLittleRobotPosition 1 1 0
+step -1 F 0
+listSpecialPositions
+step -1 F 0
+listSpecialPositions
