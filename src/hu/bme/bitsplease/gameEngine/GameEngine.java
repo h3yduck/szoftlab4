@@ -517,18 +517,22 @@ public class GameEngine {
 
 						if (actualStep.stepAction != null) {
 							if (player.actionNums.get(actualStep.stepAction) > 0) {
-								if (actualStep.stepAction == Step.ActionType.OIL)
+								if (actualStep.stepAction == Step.ActionType.OIL){
 									level.fields[level.playerPositions
 											.get(player).y][level.playerPositions
 											.get(player).x].fieldType = Field.Type
 											.fromChar('O');
-								else if (actualStep.stepAction == Step.ActionType.STICK)
+									level.fields[level.playerPositions.get(player).y][level.playerPositions.get(player).y]
+											.remainingRounds = 4;
+								}
+								else if (actualStep.stepAction == Step.ActionType.STICK){
 									level.fields[level.playerPositions
 											.get(player).y][level.playerPositions
 											.get(player).x].fieldType = Field.Type
 											.fromChar('S');
 								level.fields[level.playerPositions.get(player).y][level.playerPositions
-										.get(player).y].remainingRounds = 3;
+										.get(player).y].remainingRounds = 5;
+								}
 								player.actionNums
 										.put(actualStep.stepAction,
 												player.actionNums
@@ -606,7 +610,7 @@ public class GameEngine {
 						//ha a robot olyan mezőre lép, ahol egy másik robot vagy kisrobot található,
 						//akkor a mezőn olajfolt keletkezik
 						level.fields[i.getValue().x][i.getValue().y].fieldType = Field.Type.OIL;
-						level.fields[i.getValue().x][i.getValue().y].remainingRounds = 3;
+						level.fields[i.getValue().x][i.getValue().y].remainingRounds = 4;
 
 						if(i.getKey().getClass().toString().equals("LittleRobot")){
 							it.remove();
@@ -714,9 +718,18 @@ public class GameEngine {
 				if (!little.isCleaning()) {
 					LinkedList<Position> positions = new LinkedList<Position>();
 					positions.addLast(actual);
+					int rows = level.fields.length;
+					int coloumns = level.fields[0].length;
+					boolean[][] visited = new boolean[rows][];
+					for(int i = 0; i < level.fields.length; i++){
+						visited[i] = new boolean[coloumns];
+						for(int j = 0; j < level.fields.length; j++){
+							visited[i][j] = false;
+						}
+					}
+					visited[actual.x][actual.y] = true;
 					//megkeresi a kisrobothoz legközelebb levő takarítandó mezőt
-					Position specialPosition = getNearestGoodField(positions,
-							true);
+					Position specialPosition = getNearestGoodField(visited, positions, true);
 					//ha talált ilyen mezőt, akkor elindul annak az irányába
 					if (specialPosition != null) {
 						little.velocity.size = 1;
@@ -740,12 +753,18 @@ public class GameEngine {
 								* Math.sin(little.velocity.angle * Math.PI
 										/ 180));
 				
-				//megnézi, hogy az új pozíción található-e másik robot
+				//megnézi, hogy az új pozíción található-e másik robot vagy bent maradt e a pályán
 				boolean goodPosition = true;
-				for (Entry<Robot, Position> i : level.playerPositions
-						.entrySet()) {
-					if (i.getValue().x == actualX && i.getValue().y == actualY) {
-						goodPosition = false;
+				
+				if(actualX < 0 || actualY < 0 || actualX >= level.fields[0].length || actualY >= level.fields.length)
+					goodPosition = false;
+				
+				if(goodPosition){
+					// Ha bent maradt a pályán, akkorm egnézi, hogy ven e ott robot
+					for (Entry<Robot, Position> i : level.playerPositions.entrySet()) {
+						if (i.getValue().x == actualX && i.getValue().y == actualY) {
+							goodPosition = false;
+						}
 					}
 				}
 				//ha van rajta másik robot, akkor erre a mezőre nem léphet, ekkor keres egy másik
@@ -753,9 +772,21 @@ public class GameEngine {
 				if (!goodPosition) {
 					LinkedList<Position> positions = new LinkedList<Position>();
 					positions.addLast(new Position(actualX, actualY));
-					Position newPosition = getNearestGoodField(positions, false);
+					int rows = level.fields.length;
+					int coloumns = level.fields[0].length;
+					boolean[][] visited = new boolean[rows][];
+					for(int i = 0; i < level.fields.length; i++){
+						visited[i] = new boolean[coloumns];
+						for(int j = 0; j < level.fields.length; j++){
+							visited[i][j] = false;
+						}
+					}
+					visited[actualX][actualY] = true;
+					Position newPosition = getNearestGoodField(visited, positions, false);
 					if (newPosition != null) {
 						level.playerPositions.put(little, newPosition);
+						actualX = newPosition.x;
+						actualY = newPosition.y;
 					}
 					//ha nincs rajta másik robot, akkor beállítjuk arra a mezőre a kis robotot
 				} else {
@@ -763,8 +794,8 @@ public class GameEngine {
 				}
 				//ha a kis robot olyan mezőre lépett, ahol olaj vagy ragacs van,
 				//akkor megkezdjük a takarítást.
-				if (level.fields[actualY][actualX].fieldType == Field.Type.OIL
-						|| level.fields[actualY][actualX].fieldType == Field.Type.STICK) {
+				if (level.fields[actualX][actualY].fieldType == Field.Type.OIL
+						|| level.fields[actualX][actualY].fieldType == Field.Type.STICK) {
 					little.setRemainingCleaningTime();
 				}
 
@@ -862,8 +893,18 @@ public class GameEngine {
 					//Ilyenkor megkeresi a legközelebb lévő tisztítandó mezőt
 					if (!goodPosition) {
 						LinkedList<Position> positions = new LinkedList<Position>();
+						int rows = level.fields.length;
+						int coloumns = level.fields[0].length;
+						boolean[][] visited = new boolean[rows][];
+						for(int i = 0; i < level.fields.length; i++){
+							visited[i] = new boolean[coloumns];
+							for(int j = 0; j < level.fields.length; j++){
+								visited[i][j] = false;
+							}
+						}
+						visited[newX][newY] = true;
 						positions.addLast(new Position(newX, newY));
-						Position newPosition = getNearestGoodField(positions,false);
+						Position newPosition = getNearestGoodField(visited, positions,false);
 						//Beállítja arra a mezőre a kisrobot
 						if (newPosition != null) {
 							level.playerPositions.put(little, newPosition);
@@ -965,7 +1006,7 @@ public class GameEngine {
 
 	}
 	
-	private Position getNearestGoodField(LinkedList<Position> positions, boolean special) {
+	private Position getNearestGoodField(boolean[][] visited, LinkedList<Position> positions, boolean special) {
 		/*
 		 *  Ha special == true ,megkeresi a legközelebbi foltos mezőt
 		 *  Egyébként megkeresi a legközelebbi olyan mezőt, ahol nincs Robot
@@ -975,15 +1016,17 @@ public class GameEngine {
 		
 		
 		Position actualPos;
-		if ((actualPos = positions.pollFirst()) == null) {
+		if (positions.size() <= 0) {
 			// Ha nincs már több mező a sorban, akkor nem talált megfelelő mezőt
 			return null;
 		} else {
+			actualPos = positions.pollFirst();
 			// Ha van még mező a sorban, akkor megnézi a szomszédait
 			for (int i = actualPos.y - 1; i <= actualPos.y + 1; i++) {
-				if(i > 0 && i < level.fields.length) {
+				if(i >= 0 && i < level.fields.length) {
 					for (int j = actualPos.x - 1; j <= actualPos.x + 1; j++) {
-						if(j > 0 && j < level.fields[0].length) {
+						if(j >= 0 && j < level.fields[0].length && !visited[j][i]) {
+							visited[j][i] = true;
 							if (special) {
 								// Megnézi foltos e a mező, ha igen akkor ez a legközelebbi
 								// Ha nem, akkor hozzáadja a sorhoz
@@ -1013,7 +1056,7 @@ public class GameEngine {
 					}
 				}
 			}
-			return getNearestGoodField(positions, special);
+			return getNearestGoodField(visited, positions, special);
 		}
 	}
 }
