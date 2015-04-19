@@ -679,6 +679,7 @@ public class GameEngine {
 					}
 			    }
 
+
 				/*
 				 * Ha a robot ragacsra lépett, akkor csökkentjük a ragacs
 				 * élettartamát ha player null, akkor a robot lelépett a

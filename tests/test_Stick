@@ -1,0 +1,22 @@
+setMap testmap1.txt
+setPlayers 1
+setPlayersPositionRandom 0
+setPlayerPosition 0 0 0
+setSpecialActionNumber 1 0
+step 0 S 0
+listSpecialPositions
+setPlayerVelocity 0 0 0
+step 180 F 0
+listSpecialPositions
+setPlayerPosition 1 0 0
+setPlayerVelocity 0 0 0
+step 180 F 0
+listSpecialPositons
+setPlayerPosition 1 0 0
+setPlayerVelocity 0 0 0
+step 180 F 0
+listSpecialPositions
+setPlayerPosition 1 0 0
+setPlayerVelocity 0 0 0
+step 180 F 0
+listSpecialPositions
