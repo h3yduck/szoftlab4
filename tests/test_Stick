@@ -11,7 +11,7 @@ listSpecialPositions
 setPlayerPosition 1 0 0
 setPlayerVelocity 0 0 0
 step 180 F 0
-listSpecialPositons
+listSpecialPositions
 setPlayerPosition 1 0 0
 setPlayerVelocity 0 0 0
 step 180 F 0

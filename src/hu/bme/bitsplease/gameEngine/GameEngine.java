@@ -163,6 +163,9 @@ public class GameEngine {
 			levelName = commandArray[1];
 			levelLoader = new FileLoader(levelName);
 			level = levelLoader.getLevel();
+			players.clear();
+			littleRobots.clear();
+			outPlayers.clear();
 		}
 		
 		// Ha nem sikerült beállítani, akkor beállítunk egy alapértelmezett pályát
@@ -523,7 +526,7 @@ public class GameEngine {
 											.get(player).x].fieldType = Field.Type
 											.fromChar('O');
 									level.fields[level.playerPositions.get(player).y][level.playerPositions.get(player).y]
-											.remainingRounds = 3;
+											.remainingRounds = 4;
 								}
 								else if (actualStep.stepAction == Step.ActionType.STICK){
 									level.fields[level.playerPositions
@@ -613,6 +616,7 @@ public class GameEngine {
 						level.fields[i.getValue().x][i.getValue().y].remainingRounds = 4;
 
 						if(i.getKey().getClass().toString().equals("class hu.bme.bitsplease.playerHandler.LittleRobot")){
+							littleRobots.remove(i.getKey());
 							it.remove();
 						//ha a robot egy olyan mezőre lép, ahol egy másik robot található,
 						//akkor kiesik az a robot, amelynek kisebb a sebessége.	
@@ -707,11 +711,11 @@ public class GameEngine {
 
 			for (LittleRobot little : littleRobots) {
 
-				Position actual = level.playerPositions.get(little);
-
 				if (little == null) {
 					continue;
 				}
+				
+				Position actual = level.playerPositions.get(little);
 				
 				//Ha a kisrobot nem takarít, akkor megy a legközelebbi foltos mezőhöz
 				//Ha a kisrobotnak most járt le a törlési ideje, akkor a mező üres lesz
@@ -724,6 +728,7 @@ public class GameEngine {
 						little.setRemainingCleaningTime();
 						little.velocity.size = 0;
 						little.velocity.angle = 0;
+						little.isCleaning();
 						
 					}else{
 						
@@ -744,9 +749,9 @@ public class GameEngine {
 						//ha talált ilyen mezőt, akkor elindul annak az irányába
 						if (specialPosition != null) {
 							little.velocity.size = 1;
-							little.velocity.angle = Math.atan2(actual.y
-									- specialPosition.y, actual.x
-									- specialPosition.x)
+							little.velocity.angle = Math.atan2(specialPosition.y
+									- actual.y, specialPosition.x
+									- actual.x)
 									* 180 / Math.PI;
 						}
 					}
@@ -836,29 +841,23 @@ public class GameEngine {
 						newX = random.nextInt(level.fields[0].length);
 						newY = random.nextInt(level.fields.length);
 					//ha parancs miatt helyezzük át a kis robotot
-					} else if (commandArray.length > 3 && !TestApp.littleRandom) {
+					} else if (commandArray.length > 3 
+							&& !TestApp.littleRandom) {
 						try {
 							int index;
-							//ha annyi robot, akkor az adott számút átteszi a megfelelő helyre
+							// ha elegendő robot, akkor az adott számút átteszi a megfelelő helyre
 							if ((index = Integer.parseInt(commandArray[3])) < littleRobots
 									.size() && index >= 0) {
 								if (littleRobots.get(index) == null) {
 									littleRobots.set(index, new LittleRobot());
 								}
 								little = littleRobots.get(index);
-							//ha nincs annyi robot, ahanyadik sorszámút akarta, akkor berakhatja,
-							//csak lesz sok kis robot null értékkel
+							// ha nincs annyi robot, ahanyadik sorszámút akarta, akkor berakhatja,
+							// a meglévő robotok után
 							} else {
-								List<LittleRobot> littles = new ArrayList<LittleRobot>();
-								for (LittleRobot littleIter : littleRobots) {
-									littles.add(littleIter);
-								}
-								while (index < littles.size() - 1) {
-									littles.add(null);
-									index++;
-								}
-								littles.add(little);
+								littleRobots.add(little);
 							}
+							
 							//Az új pozíció meghatározása a 2 parancsparaméterből
 							if(Integer.parseInt(commandArray[1]) < level.fields[0].length &&
 								Integer.parseInt(commandArray[1]) >= 0 &&
@@ -907,7 +906,13 @@ public class GameEngine {
 						}
 					} else {
 						level.playerPositions.put(little, new Position(newX,newY));
-						littleRobots.add(little);
+						if(!littleRobots.contains(little))
+							littleRobots.add(little);
+					}
+					
+					if(command != null && level.playerPositions.get(little) == null){
+						display.displayError("Nem sikerült elhelyezni a kisrobotot!");
+						littleRobots.remove(little);
 					}
 				}
 		}
@@ -923,6 +928,12 @@ public class GameEngine {
 		}
 		//Újrarajzoljuk a pályát
 		if (command == null || commandArray[0].equals("displayLevel")) {
+			
+			if(command != null && level == null){
+				System.err.println("Nincs megadva még pálya!");
+				return false;
+			}
+			
 			display.displayLevel(level);
 		}
 		//(SetPlayerVelocity "szám1" "szám2" "szám3") parancs megadása esetén
@@ -945,10 +956,22 @@ public class GameEngine {
 		}
 		//listPlayers parancs megadása esetén a játékosok kilistázása
 		if (commandArray[0].equals("listPlayers")) {
+			
+			if(level == null){
+				System.err.println("Nincs megadva még pálya!");
+				return false;
+			}
+			
+			boolean wasOut = false;
 			for (Player player : players) {
 				if (player == null) {	
 					continue;
 				}
+				if(level.playerPositions.get(player) == null){
+					System.err.println("Nem helyezted még el a játékost a pályán!");
+					return false;
+				}
+				wasOut = true;
 				System.out.println(player.name + " "
 						+ level.playerPositions.get(player).x + " "
 						+ level.playerPositions.get(player).y + " "
@@ -961,6 +984,7 @@ public class GameEngine {
 				if (player == null) {
 					continue;
 				}
+				wasOut = true;
 				System.out.println(player.name + " "
 						+ "-1 "
 						+ "-1 "
@@ -969,21 +993,45 @@ public class GameEngine {
 						+ player.velocity.size + " " + player.velocity.angle
 						+ " igen");
 			}
+			if(!wasOut){
+				System.out.println("-");
+			}
 		}
 		//listLittleRobots parancs esetén a kis robotok kilistázása
 		if (commandArray[0].equals("listLittleRobots")) {
+			
+			if(level == null){
+				System.err.println("Nincs megadva még pálya!");
+				return false;
+			}
+			
+			boolean wasOut = false;
 			for (LittleRobot little : littleRobots) {
+				
 				if (little == null) {
 					continue;
 				}
+				wasOut = true;
+				if(level.playerPositions.get(little) == null){
+					System.err.println("Nem helyezted még el a kisrobotot a pályán!");
+					return false;
+				}
 				System.out.println(level.playerPositions.get(little).x + " "
 						+ level.playerPositions.get(little).y + " "
-						+ little.velocity.size + " " + little.velocity.angle
-						+ " nem");
+						+ little.velocity.size + " " + little.velocity.angle);
+			}
+			if(!wasOut){
+				System.out.println("-");
 			}
 		}
 		//listSpecialPositions parancs esetén a pályán lévő speciális elemek kilistázása
 		if (commandArray[0].equals("listSpecialPositions")) {
+			
+			if(level == null){
+				System.err.println("Nincs megadva még pálya!");
+				return false;
+			}
+			
 			boolean wasOut = false;
 			for (int i = 0; i < level.fields.length; i++) {
 				for (int j = 0; j < level.fields[0].length; j++) {
