@@ -163,6 +163,9 @@ public class GameEngine {
 			levelName = commandArray[1];
 			levelLoader = new FileLoader(levelName);
 			level = levelLoader.getLevel();
+			players.clear();
+			littleRobots.clear();
+			outPlayers.clear();
 		}
 		
 		// Ha nem sikerült beállítani, akkor beállítunk egy alapértelmezett pályát
@@ -925,6 +928,12 @@ public class GameEngine {
 		}
 		//Újrarajzoljuk a pályát
 		if (command == null || commandArray[0].equals("displayLevel")) {
+			
+			if(command != null && level == null){
+				System.err.println("Nincs megadva még pálya!");
+				return false;
+			}
+			
 			display.displayLevel(level);
 		}
 		//(SetPlayerVelocity "szám1" "szám2" "szám3") parancs megadása esetén
@@ -947,10 +956,20 @@ public class GameEngine {
 		}
 		//listPlayers parancs megadása esetén a játékosok kilistázása
 		if (commandArray[0].equals("listPlayers")) {
+			
+			if(level == null){
+				System.err.println("Nincs megadva még pálya!");
+				return false;
+			}
+			
 			boolean wasOut = false;
 			for (Player player : players) {
 				if (player == null) {	
 					continue;
+				}
+				if(level.playerPositions.get(player) == null){
+					System.err.println("Nem helyezted még el a játékost a pályán!");
+					return false;
 				}
 				wasOut = true;
 				System.out.println(player.name + " "
@@ -980,6 +999,12 @@ public class GameEngine {
 		}
 		//listLittleRobots parancs esetén a kis robotok kilistázása
 		if (commandArray[0].equals("listLittleRobots")) {
+			
+			if(level == null){
+				System.err.println("Nincs megadva még pálya!");
+				return false;
+			}
+			
 			boolean wasOut = false;
 			for (LittleRobot little : littleRobots) {
 				
@@ -987,6 +1012,10 @@ public class GameEngine {
 					continue;
 				}
 				wasOut = true;
+				if(level.playerPositions.get(little) == null){
+					System.err.println("Nem helyezted még el a kisrobotot a pályán!");
+					return false;
+				}
 				System.out.println(level.playerPositions.get(little).x + " "
 						+ level.playerPositions.get(little).y + " "
 						+ little.velocity.size + " " + little.velocity.angle);
@@ -997,6 +1026,12 @@ public class GameEngine {
 		}
 		//listSpecialPositions parancs esetén a pályán lévő speciális elemek kilistázása
 		if (commandArray[0].equals("listSpecialPositions")) {
+			
+			if(level == null){
+				System.err.println("Nincs megadva még pálya!");
+				return false;
+			}
+			
 			boolean wasOut = false;
 			for (int i = 0; i < level.fields.length; i++) {
 				for (int j = 0; j < level.fields[0].length; j++) {
