@@ -1,24 +1,31 @@
 package hu.bme.bitsplease.displayHandler;
 
-import com.sun.corba.se.spi.orbutil.fsm.Input;
+import hu.bme.bitsplease.frames.PlayFrame;
+import hu.bme.bitsplease.frames.SettingsFrame;
 import hu.bme.bitsplease.levelHandler.Level;
 import hu.bme.bitsplease.playerHandler.Player;
-import hu.bme.bitsplease.stepHandler.InputHandler;
-import hu.bme.bitsplease.stepHandler.Step;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Map;
 
 /**
  * Created by h3yduck on 4/15/15.
  */
 public class GUIDisplay implements DisplayHandler {
-    public JFrame settingsFrame;
-    public JFrame playFrame;
+    public SettingsFrame settingsFrame;
+    public PlayFrame playFrame;
+
+    public GUIDisplay() {
+        settingsFrame = new SettingsFrame();
+        playFrame = new PlayFrame();
+    }
 
     @Override
-    public void displayLevel(Level actualLevelState) {
 
+    public void displayLevel(Level actualLevelState) {
+        playFrame.canvas.level = actualLevelState;
+        playFrame.canvas.invalidate();
     }
 
     @Override
@@ -28,7 +35,7 @@ public class GUIDisplay implements DisplayHandler {
 
     @Override
     public void displayRound(String round) {
-
+        playFrame.round.setText(round);
     }
 
     @Override
@@ -38,11 +45,17 @@ public class GUIDisplay implements DisplayHandler {
 
     @Override
     public void displaySpecialActionTypesNumber(int oil, int stick) {
-
+        playFrame.numOfOil.setText(""+oil);
+        playFrame.numOfStick.setText(""+stick);
     }
 
     @Override
     public void displayError(String error) {
+        JOptionPane.showMessageDialog(null, error, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
+    @Override
+    public void displayPlayerName(String name) {
+        playFrame.playerName.setText(name);
     }
 }

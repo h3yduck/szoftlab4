@@ -14,4 +14,5 @@ public interface DisplayHandler {
     public void displayCongrat(String player);
     public void displaySpecialActionTypesNumber(int oil, int stick);
     public void displayError(String error);
+    public void displayPlayerName(String name);
 }

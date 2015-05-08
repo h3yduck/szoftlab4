@@ -15,11 +15,11 @@ public class FileLoader implements LevelLoader {
 	private String pathToLevelFile;
 	
 	public FileLoader(String pathToLevelFile) {
-		this.pathToLevelFile = "maps" + File.separator + pathToLevelFile;
+		this.pathToLevelFile = pathToLevelFile;
 	}
 
 	public void setPathToLevelFile(String pathToLevelFile) {
-		this.pathToLevelFile = "maps" + File.separator + pathToLevelFile;
+		this.pathToLevelFile = pathToLevelFile;
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class FileLoader implements LevelLoader {
 			level.playerPositions = new HashMap<Robot, Position>();
 
 			br.close();
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 
 			// Ha nem megfelelő a megadott fájl, akkor újra bekérjük a fájl
 			// nevét.

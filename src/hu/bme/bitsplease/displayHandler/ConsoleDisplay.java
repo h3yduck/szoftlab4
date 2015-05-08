@@ -74,4 +74,9 @@ public class ConsoleDisplay implements DisplayHandler {
 		System.err.println(error);
 		System.err.println();
 	}
+
+	@Override
+	public void displayPlayerName(String name) {
+
+	}
 }

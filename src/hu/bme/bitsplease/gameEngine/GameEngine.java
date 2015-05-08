@@ -1,7 +1,9 @@
 package hu.bme.bitsplease.gameEngine;
 
 import hu.bme.bitsplease.TestApp;
+import hu.bme.bitsplease.displayHandler.GUIDisplay;
 import hu.bme.bitsplease.stepHandler.ConsoleInput;
+import hu.bme.bitsplease.stepHandler.GUIInput;
 import hu.bme.bitsplease.stepHandler.InputHandler;
 import hu.bme.bitsplease.stepHandler.Step;
 import hu.bme.bitsplease.stepHandler.Step.ActionType;
@@ -31,50 +33,36 @@ import java.util.Random;
 public class GameEngine {
 
 	// A pályabetöltő objektum
-	private LevelLoader levelLoader = null;
-	private Level level = null;
+	public LevelLoader levelLoader = null;
+	public Level level = null;
 
 	// A játékban hátramaradt körök száma
-	private int remainingRounds;
+	public int remainingRounds;
 
 	// Eredeti körök száma
-	private int originalRounds;
+	public int originalRounds;
 
-	private List<Player> outPlayers; // Kiesett játékosok
-	private List<Player> players; // A játékosok listája
+	public List<Player> outPlayers; // Kiesett játékosok
+	public List<Player> players; // A játékosok listája
 
-	private InputHandler input;
-	private DisplayHandler display;
+	public GUIInput input;
+	public GUIDisplay display;
 
 	// Kis tisztító robotok
-	private List<LittleRobot> littleRobots;
+	public List<LittleRobot> littleRobots;
 
 	// ha egy játékos kiesett, akkor belekerül az outPlayers listába, és az
 	// értéke null lesz a players listában
-	private Map<Player, Integer> playerScores; // A játékosok pontjai
+	public Map<Player, Integer> playerScores; // A játékosok pontjai
 
 	// ha egy játékos kiesett,akkor ez a függvény végzi el a játékos törlését a
 	// pályáról, stb.
-	private void deletePlayer(Player player) {
+	public void deletePlayer(Player player) {
 		if(player != null){
 			outPlayers.add(player);
 			players.set(players.indexOf(player), null);
 			level.playerPositions.remove(player);
 		}
-	}
-
-	// GameEngine paraméteres konstruktora, ahol a paraméter a pályabetöltő
-	// objektum
-	public GameEngine(LevelLoader levelLoader) {
-		this.levelLoader = levelLoader;
-		players = new ArrayList<Player>();
-		outPlayers = new ArrayList<Player>();
-		littleRobots = new ArrayList<LittleRobot>();
-		playerScores = new HashMap<Player, Integer>();
-		input = new ConsoleInput();
-		display = new ConsoleDisplay();
-		remainingRounds = 10;
-		originalRounds = remainingRounds;
 	}
 
 	// GameEngine paraméter nélküli konstruktora
@@ -83,22 +71,11 @@ public class GameEngine {
 		outPlayers = new ArrayList<Player>();
 		littleRobots = new ArrayList<LittleRobot>();
 		playerScores = new HashMap<Player, Integer>();
-		input = new ConsoleInput();
-		display = new ConsoleDisplay();
 		remainingRounds = 10;
 		originalRounds = remainingRounds;
 	}
 
-	public void startGame() {
-		while (getSettings(null));
-
-		/*
-		 * A játék addig fut, amíg a play függvény igazat ad vissza null ->
-		 * parancsok nélkül futtatás
-		 */
-
-		while (play(null));
-
+	public void endGame(){
 		Player maxScorePlayer = null;
 		int maxScore = -1;
 		// legtöbb pontot szerző játékos meghatározása
@@ -151,11 +128,11 @@ public class GameEngine {
 		// Pálya betöltése Normál mód esetén
 		if (command == null) {
 			level = null;
-			while (level == null) {
-				levelName = input.getLevel();
-				levelLoader = new FileLoader(levelName);
-				level = levelLoader.getLevel();
-			}
+			levelName = input.getLevel();
+			System.out.println(levelName);
+			levelLoader = new FileLoader(levelName);
+			level = levelLoader.getLevel();
+			if(level == null) return false;
 		}
 
 		// Pálya betöltése Parancs-mód esetén a (setMap "fájlnév") paranccsal
@@ -334,6 +311,7 @@ public class GameEngine {
 				if (positions.size() < players.size()) {
 					display.displayError("Túl sok játékost adtál meg a kiválasztott pályához. "
 							+ "Adj meg másik pályát vagy kevesebb játékost.");
+					System.out.println("Túl sok játékost adtál meg a kiválasztott pályához.");
 					Player.resetSNum();
 					return true;
 				}
@@ -451,6 +429,21 @@ public class GameEngine {
 		if (command == null || commandArray[0].equals("step")) {
 			for (Player player : players) {
 
+				if (player == null) {
+					continue;
+				}
+
+				display.displayRound(String.valueOf(remainingRounds));
+				player.displaySpecialActionTypesNumber();
+				display.displayPlayerName(player.name);
+				synchronized (this) {
+					try {
+						this.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
 				if (commandArray[0].equals("step")) {
 					try {
 						int index;
@@ -471,9 +464,6 @@ public class GameEngine {
 				}
 
 				// Ha a player null, akkor a játékos már kiesett
-				if (player == null) {
-					continue;
-				}
 
 				// Megnézzük, hogy milyen mezőn áll a robot
 				// Ha FREE-n, akkor bekérjük a lépést
@@ -492,6 +482,7 @@ public class GameEngine {
 						goodStep = true;
 						if (command == null) {
 							player.displaySpecialActionTypesNumber();
+
 							actualStep = player.getStep();
 						} else {
 							try {
@@ -1052,11 +1043,11 @@ public class GameEngine {
 			}
 		}
 
-		return true;
+		return false;
 
 	}
 	
-	private Position getNearestGoodField(boolean[][] visited, LinkedList<Position> positions, boolean special) {
+	public Position getNearestGoodField(boolean[][] visited, LinkedList<Position> positions, boolean special) {
 		/*
 		 *  Ha special == true ,megkeresi a legközelebbi foltos mezőt
 		 *  Egyébként megkeresi a legközelebbi olyan mezőt, ahol nincs Robot
@@ -1107,5 +1098,9 @@ public class GameEngine {
 			}
 			return getNearestGoodField(visited, positions, special);
 		}
+	}
+
+	synchronized public void notifyThread(){
+		this.notify();
 	}
 }
