@@ -76,7 +76,7 @@ public class PlayFrame extends JFrame {
                                                                 .addComponent(numOfOil))
                                                         .addGroup(contentPaneLayout.createSequentialGroup()
                                                                 .addComponent(playerName)
-                                                                .addGap(18, 18, 18)
+                                                                .addGap(180, 180, 180)
                                                                 .addComponent(angle, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
                                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                                 .addComponent(useOil)))
@@ -110,14 +110,20 @@ public class PlayFrame extends JFrame {
                                 .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 173, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(4, Short.MAX_VALUE))
         );
+
         pack();
         setLocationRelativeTo(getOwner());
-
 
         doStep.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gameEngine.notifyThread();
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        canvas.repaint();
+                    }
+                });
             }
         });
 

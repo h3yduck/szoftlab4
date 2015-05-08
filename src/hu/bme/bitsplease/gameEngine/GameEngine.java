@@ -75,9 +75,12 @@ public class GameEngine {
 		originalRounds = remainingRounds;
 	}
 
+	public Player maxScorePlayer;
+	public int maxScore;
+
 	public void endGame(){
-		Player maxScorePlayer = null;
-		int maxScore = -1;
+		maxScorePlayer = null;
+		maxScore = -1;
 		// legtöbb pontot szerző játékos meghatározása
 
 		// még játékban lévő játékosok vizsgálata
@@ -514,18 +517,17 @@ public class GameEngine {
 								if (actualStep.stepAction == Step.ActionType.OIL){
 									level.fields[level.playerPositions
 											.get(player).y][level.playerPositions
-											.get(player).x].fieldType = Field.Type
-											.fromChar('O');
-									level.fields[level.playerPositions.get(player).y][level.playerPositions.get(player).y]
+											.get(player).x].fieldType = Field.Type.OIL;
+									level.fields[level.playerPositions.get(player).y][level.playerPositions.get(player).x]
 											.remainingRounds = 4;
 								}
 								else if (actualStep.stepAction == Step.ActionType.STICK){
 									level.fields[level.playerPositions
 											.get(player).y][level.playerPositions
-											.get(player).x].fieldType = Field.Type
-											.fromChar('S');
+											.get(player).x].fieldType = Field.Type.STICK;
+
 								level.fields[level.playerPositions.get(player).y][level.playerPositions
-										.get(player).y].remainingRounds = 4;
+										.get(player).x].remainingRounds = 4;
 								}
 								player.actionNums
 										.put(actualStep.stepAction,
@@ -911,7 +913,7 @@ public class GameEngine {
 		if (command == null) {
 			// Ha lejárt az idő vagy már csak egy játékos van, akkor kilépünk
 			if (remainingRounds <= 0 || outPlayers.size() >= players.size() - 1) {
-				return false;
+				return true;
 			}
 			//Megjelenítjük a hátralévő körök számát.
 			display.displayRound(String.valueOf(remainingRounds));

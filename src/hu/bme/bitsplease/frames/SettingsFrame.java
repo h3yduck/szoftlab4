@@ -232,6 +232,13 @@ public class SettingsFrame extends JFrame {
                         @Override
                         public void run() {
                             while(!gameEngine.play(null));
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gameEngine.endGame();
+                                    gameEngine.input.playFrame.dispose();
+                                }
+                            });
                         }
                     });
                     t.start();

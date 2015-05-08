@@ -25,7 +25,7 @@ public class GUIDisplay implements DisplayHandler {
 
     public void displayLevel(Level actualLevelState) {
         playFrame.canvas.level = actualLevelState;
-        playFrame.canvas.invalidate();
+        playFrame.canvas.repaint();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class GUIDisplay implements DisplayHandler {
 
     @Override
     public void displayCongrat(String player) {
-
+        JOptionPane.showMessageDialog(null, "Gratulalok " + player + " te nyertel!", "ConGrat", JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
