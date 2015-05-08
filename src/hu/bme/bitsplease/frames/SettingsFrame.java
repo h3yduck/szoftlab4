@@ -213,7 +213,7 @@ public class SettingsFrame extends JFrame {
         );
         pack();
         setLocationRelativeTo(getOwner());
-        playerNames = new ArrayList<>();
+        playerNames = new ArrayList<JTextField>();
         playerNames.add(textField1);
         playerNames.add(textField2);
         playerNames.add(textField3);
