@@ -76,7 +76,7 @@ public class PlayFrame extends JFrame {
                                                                 .addComponent(numOfOil))
                                                         .addGroup(contentPaneLayout.createSequentialGroup()
                                                                 .addComponent(playerName)
-                                                                .addGap(180, 180, 180)
+                                                                .addGap(18, 18, 18)
                                                                 .addComponent(angle, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
                                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                                 .addComponent(useOil)))
